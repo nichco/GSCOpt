@@ -63,10 +63,11 @@ class GSCOpt():
         self.x_init = x_init
         self.num_vars = len(x_init)
         self.success = False
+        self.iter = 0
 
     def solve(self, max_iter=100, tol=1e-5):
 
-        for i in range(max_iter):
+        for k in range(max_iter):
 
             old= np.concatenate([x.flatten() for x in self.x_init])
 
@@ -75,14 +76,17 @@ class GSCOpt():
                 solution = block(self.x_init)
                 print('solution: ', solution)
                 self.x_init = solution
-            
+
+                gc.collect()  # Clear memory after each iteration
+
             # Check convergence
             new = np.concatenate([x.flatten() for x in self.x_init])
             if np.allclose(new, old, rtol=tol):
                 self.success = True
                 break
 
-            gc.collect()  # Clear memory after each iteration
+        
+        self.iter = k
 
         return
 
@@ -100,8 +104,9 @@ opt = GSCOpt(blocks=[block1_solve, block2_solve], x_init=x_init)
 
 tracemalloc.start()  # Start tracing memory allocations
 
-opt.solve(max_iter=50, tol=1e-3)
+opt.solve(max_iter=50, tol=1e-4)
 print('Success: ', opt.success)
+print('Iterations: ', opt.iter)
 
 # print peak memory usage
 current, peak = tracemalloc.get_traced_memory()
