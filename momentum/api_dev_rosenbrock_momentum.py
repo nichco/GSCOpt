@@ -7,6 +7,7 @@ import gc
 import time
 import matplotlib.pyplot as plt
 import pickle
+from typing import List, Callable
 
 
 objective = []
@@ -39,6 +40,8 @@ def block1_solve(x_init: list, y=None):
     obj = optimizer.results['fun']
     objective.append(obj)
 
+    gc.collect()
+
     return [x1_star, x2_init]  # Return the updated x1 and the unchanged x2
 
 
@@ -68,48 +71,55 @@ def block2_solve(x_init: list, y=None):
     obj = optimizer.results['fun']
     objective.append(obj)
 
+    gc.collect()
+
     return [x1_init, x2_star]  # Return the unchanged x1 and the updated x2
 
 
 
 
+
 class GSCOpt():
-    def __init__(self, blocks, x_init: list):
+    def __init__(self, 
+                 blocks: List[Callable], 
+                 x_init: List[np.ndarray]):
+
         self.blocks = blocks
         self.x_init = x_init
         self.num_vars = len(x_init)
         self.success = False
         self.iter = 0
         self.time = None
-        self.omega = 1.0
+        self.process_time = None
+        self.omega = 0.5
 
     def solve(self, 
               max_iter: int=100, 
               tol: float=1e-5):
 
         t1 = time.time()
+        t1p = time.process_time()
 
+        # Block coordinate descent algorithm
         for k in range(max_iter):
 
-            old = np.concatenate([x.flatten() for x in self.x_init])
-            old_values = self.x_init.copy()
+            x_k_minus_1 = self.x_init.copy()
 
+            # Solve each block
             for block in self.blocks:
                 self.x_init = block(self.x_init)
                 print('solution: ', self.x_init)
 
-                gc.collect()  # Clear memory after each iteration
-
             # Check convergence
-            new = np.concatenate([x.flatten() for x in self.x_init])
-            if np.allclose(new, old, rtol=tol):
-                self.success = True
+            self.success = all(np.allclose(new, old, rtol=tol) 
+                            for new, old in zip(self.x_init, x_k_minus_1))
+            if self.success:
                 break
 
             # momentum update
             new_values = self.x_init.copy()
             for i in range(self.num_vars):
-                self.x_init[i] = new_values[i] + self.omega * (new_values[i] - old_values[i])
+                self.x_init[i] = new_values[i] + self.omega * (new_values[i] - x_k_minus_1[i])
 
             # omega update
             if k > 0:
@@ -119,12 +129,12 @@ class GSCOpt():
                 else:
                     self.omega *= 0.7
 
+        
         self.iter = k
         self.time = time.time() - t1
+        self.process_time = time.process_time() - t1p
 
-        return
-
-
+        return self.success
 
 
 
