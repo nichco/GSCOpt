@@ -86,13 +86,13 @@ class GSCOpt():
         self.x_init = x_init
         self.num_vars = len(x_init)
         self.success = False
-        self.iter = 0
+        self.num_iter = 0
         self.time = None
         self.process_time = None
 
     def solve(self, 
               max_iter: int=100, 
-              tol: float=1e-5):
+              tol: float=1e-5) -> bool:
 
         t1 = time.time()
         t1p = time.process_time()
@@ -108,13 +108,13 @@ class GSCOpt():
                 print('solution: ', self.x_init)
 
             # Check convergence
-            self.success = all(np.allclose(new, old, rtol=tol) 
-                            for new, old in zip(self.x_init, x_k_minus_1))
-            if self.success:
+            if all(np.allclose(new, old, rtol=tol) 
+                   for new, old in zip(self.x_init, x_k_minus_1)):
+                self.success = True
                 break
 
         
-        self.iter = k
+        self.num_iter = k + 1
         self.time = time.time() - t1
         self.process_time = time.process_time() - t1p
 
@@ -132,7 +132,7 @@ opt.solve(max_iter=300, tol=1e-4)
 
 
 print('Success: ', opt.success)
-print('Iterations: ', opt.iter)
+print('Iterations: ', opt.num_iter)
 print('Time (s): ', opt.time)
 print('Process Time (s): ', opt.process_time)
 
