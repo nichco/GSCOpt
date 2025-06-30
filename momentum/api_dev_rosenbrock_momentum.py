@@ -6,6 +6,7 @@ import modopt as mo
 import gc
 import time
 import matplotlib.pyplot as plt
+import pickle
 
 
 objective = []
@@ -21,7 +22,7 @@ def block1_solve(x_init: list, y=None):
     def jax_obj(x):
         x1 = x[0]
         x2 = x2_init[0]
-        return (1 - x1)**2 + 1*(x2 - x1**2)**2
+        return (1 - x1)**2 + 10*(x2 - x1**2)**2
 
 
     prob = mo.JaxProblem(x0=x1_init, 
@@ -50,7 +51,7 @@ def block2_solve(x_init: list, y=None):
     def jax_obj(x):
         x1 = x1_init[0]
         x2 = x[0]
-        return (1 - x1)**2 + 1*(x2 - x1**2)**2
+        return (1 - x1)**2 + 10*(x2 - x1**2)**2
 
 
     prob = mo.JaxProblem(x0=x2_init, 
@@ -80,6 +81,7 @@ class GSCOpt():
         self.success = False
         self.iter = 0
         self.time = None
+        self.omega = 1.0
 
     def solve(self, 
               max_iter: int=100, 
@@ -90,6 +92,7 @@ class GSCOpt():
         for k in range(max_iter):
 
             old = np.concatenate([x.flatten() for x in self.x_init])
+            old_values = self.x_init.copy()
 
             for block in self.blocks:
                 self.x_init = block(self.x_init)
@@ -103,7 +106,19 @@ class GSCOpt():
                 self.success = True
                 break
 
-        
+            # momentum update
+            new_values = self.x_init.copy()
+            for i in range(self.num_vars):
+                self.x_init[i] = new_values[i] + self.omega * (new_values[i] - old_values[i])
+
+            # omega update
+            if k > 0:
+                if objective[-1] < objective[-2]:
+                    # self.omega *= 1.1
+                    pass
+                else:
+                    self.omega *= 0.7
+
         self.iter = k
         self.time = time.time() - t1
 
@@ -117,7 +132,7 @@ x_init = [np.array([5.]), np.array([5.])]
 
 # block coordinate descent algorithm
 opt = GSCOpt(blocks=[block1_solve, block2_solve], x_init=x_init)
-opt.solve(max_iter=300, tol=1e-4)
+opt.solve(max_iter=500, tol=1e-4)
 
 
 print('Success: ', opt.success)
@@ -125,6 +140,26 @@ print('Iterations: ', opt.iter)
 print('Time (s): ', opt.time)
 
 
+# plt.plot(objective)
+# plt.xlabel('Iteration')
+# plt.ylabel('Objective function value')
+# plt.grid()
+# plt.show()
+
+
+
+
+
+# with open('omega_0_b10.pkl', 'wb') as f:
+#     pickle.dump(objective, f)
+
+
+
+# open pickle file and plot
+with open('momentum/omega_0_b10.pkl', 'rb') as f:
+    objective_0 = pickle.load(f)
+
+plt.plot(objective_0)
 plt.plot(objective)
 plt.xlabel('Iteration')
 plt.ylabel('Objective function value')
