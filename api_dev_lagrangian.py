@@ -257,16 +257,20 @@ class GSCOpt():
         self.success = False
         self.iter = 0
         self.time = None
+        self.mu = 1.0 # augmented Lagrangian penalty coefficient
+        self.y = None # Lagrange multipliers
 
     def solve(self, 
               max_iter: int=100, 
-              tol: float=1e-5):
+              tol: float=1e-5,
+              rho: float=1.1, # penalty increase factor
+              ) -> bool:
 
         t1 = time.time()
 
         for k in range(max_iter):
 
-            old = np.concatenate([np.array(x).flatten() for x in self.x_init])
+            x_k_minus_1 = self.x_init.copy()
 
             for block in self.blocks:
                 self.x_init = block(self.x_init)
@@ -274,16 +278,22 @@ class GSCOpt():
                 gc.collect()  # Clear memory after each iteration
 
             # Check convergence
-            new = np.concatenate([np.array(x).flatten() for x in self.x_init])
-            if np.allclose(new, old, rtol=tol):
+            if all(np.allclose(new, old, rtol=tol) 
+                   for new, old in zip(self.x_init, x_k_minus_1)):
                 self.success = True
                 break
+
+            # Update the Lagrange multipliers
+            # self.y = self.y + self.mu * h # need to define h, new function??
+            
+            # Update the penalty coefficient
+            self.mu = rho * self.mu
 
         
         self.iter = k
         self.time = time.time() - t1
 
-        return
+        return self.success
 
 
 
