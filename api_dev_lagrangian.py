@@ -22,7 +22,7 @@ objective = []
 
 def block1_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
-                 rho: float = 1, # penalty coefficient
+                 mu: float = 1, # penalty coefficient
                  ) -> list:
     # design variable(s): all
 
@@ -47,7 +47,7 @@ def block1_solve(v_init: list,
         j1 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
         j2 = 0.5 * dt * jnp.sum(u_init_2[:-1]**2 + u_init_2[1:]**2)
         
-        return 1e-2 * j1 + j2 + rho * penalty
+        return 1e-2 * j1 + j2 + mu * penalty
 
     def jax_con(v):
         l = v[0]
@@ -126,6 +126,8 @@ def block1_solve(v_init: list,
     obj = optimizer.results['fun']
     objective.append(obj)
 
+    gc.collect()
+
     return [ans[0], ans[1], l_init_2, mp_init_2, ans[2:n*4+2].reshape((4, n)), ans[n*4+2:].reshape((n,)), x_init_2, u_init_2]
 
 
@@ -135,7 +137,7 @@ def block1_solve(v_init: list,
 
 def block2_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
-                 rho: float = 1, # penalty coefficient
+                 mu: float = 1, # penalty coefficient
                  ) -> list:
     # design variable(s): all
 
@@ -160,7 +162,7 @@ def block2_solve(v_init: list,
         j1 = 0.5 * dt * jnp.sum(u_init_1[:-1]**2 + u_init_1[1:]**2)
         j2 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
 
-        return 1e-2 * j2 + j1 + rho * penalty
+        return 1e-2 * j2 + j1 + mu * penalty
 
     def jax_con(v):
         l = v[0]
@@ -239,6 +241,8 @@ def block2_solve(v_init: list,
     obj = optimizer.results['fun']
     objective.append(obj)
 
+    gc.collect()
+
     return [l_init_1, mp_init_1, ans[0], ans[1], x_init_1, u_init_1, ans[2:n*4+2].reshape((4, n)), ans[n*4+2:].reshape((n,))]
 
 
@@ -273,9 +277,8 @@ class GSCOpt():
             x_k_minus_1 = self.x_init.copy()
 
             for block in self.blocks:
-                self.x_init = block(self.x_init)
+                self.x_init = block(self.x_init, self.y, self.mu)
 
-                gc.collect()  # Clear memory after each iteration
 
             # Check convergence
             if all(np.allclose(new, old, rtol=tol) 
@@ -289,8 +292,8 @@ class GSCOpt():
             # Update the penalty coefficient
             self.mu = rho * self.mu
 
-        
-        self.iter = k
+
+        self.num_iter = k + 1
         self.time = time.time() - t1
 
         return self.success
