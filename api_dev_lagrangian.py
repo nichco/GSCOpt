@@ -17,12 +17,13 @@ mu_cart = 0.03
 mu_pole = 0.03
 uscale = 10
 
-rho = 10 # NEW PENALTY COEFFICIENT *******************
-
 objective = []
 
 
-def block1_solve(v_init: list, y=None):
+def block1_solve(v_init: list,
+                 y: np.ndarray = None, # lagrange multipliers
+                 rho: float = 1, # penalty coefficient
+                 ) -> list:
     # design variable(s): all
 
     l_init_1 = v_init[0]
@@ -46,7 +47,7 @@ def block1_solve(v_init: list, y=None):
         j1 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
         j2 = 0.5 * dt * jnp.sum(u_init_2[:-1]**2 + u_init_2[1:]**2)
         
-        return 1e-2 * j1 + rho * penalty
+        return 1e-2 * j1 + j2 + rho * penalty
 
     def jax_con(v):
         l = v[0]
@@ -132,7 +133,10 @@ def block1_solve(v_init: list, y=None):
 
 
 
-def block2_solve(v_init: list, y=None):
+def block2_solve(v_init: list,
+                 y: np.ndarray = None, # lagrange multipliers
+                 rho: float = 1, # penalty coefficient
+                 ) -> list:
     # design variable(s): all
 
     l_init_1 = v_init[0]
@@ -156,7 +160,7 @@ def block2_solve(v_init: list, y=None):
         j1 = 0.5 * dt * jnp.sum(u_init_1[:-1]**2 + u_init_1[1:]**2)
         j2 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
 
-        return 1e-2 * j2 + rho * penalty
+        return 1e-2 * j2 + j1 + rho * penalty
 
     def jax_con(v):
         l = v[0]
@@ -300,7 +304,7 @@ v_init = [l0, mp0, l0, mp0, x0, u0, x0, u0]
 
 # block coordinate descent algorithm
 opt = GSCOpt(blocks=[block1_solve, block2_solve], x_init=v_init)
-opt.solve(max_iter=10, tol=1e-4)
+opt.solve(max_iter=30, tol=1e-4)
 
 
 print('Success: ', opt.success)
@@ -308,7 +312,7 @@ print('Iterations: ', opt.iter)
 print('Time (s): ', opt.time)
 
 
-plt.plot(objective)
+plt.plot(objective[1:]) # skip the first infeasible iteration
 plt.xlabel('Iteration')
 plt.ylabel('Objective function value')
 plt.grid()
