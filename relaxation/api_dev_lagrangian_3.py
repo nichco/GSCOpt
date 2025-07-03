@@ -16,7 +16,7 @@ g = 9.81
 d = 0.8
 mu_cart = 0.03
 mu_pole = 0.03
-uscale = 10 # **************************************************************SOMETHING WRONG WITH USCALE***************************************************************
+uscale = 1 # **************************************************************SOMETHING WRONG WITH USCALE***************************************************************
 
 # make the two control problems different
 # initial_state_1 = np.array([0, np.pi, 0, 0])  # [x, theta, dx, dtheta]
@@ -503,10 +503,10 @@ opt = GSCOptALR(blocks=[block1_solve, block2_solve, block3_solve],
                 con=con,
                 x_init=v_init)
 
-opt.solve(max_iter=10, 
+opt.solve(max_iter=200, 
           rho=1.5, # must be greater than 1
           tol=1e-5,
-          ctol=1e-5)
+          ctol=1e-3)
 
 
 print('Success: ', opt.success)
