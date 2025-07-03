@@ -304,6 +304,7 @@ class GSCOptALR():
               max_iter: int=100, 
               tol: float=1e-5,
               rho: float=1.2, # penalty increase factor
+              ctol: float=1e-4, # consensus constraint tolerance
               ) -> bool:
 
         t1 = time.time()
@@ -322,12 +323,17 @@ class GSCOptALR():
                 self.success = True
                 break
 
-            # Update the Lagrange multipliers
-            self.y = self.y + self.mu * self.con(self.x_init)
-            coef.append(self.y)
-            
-            # Update the penalty coefficient
-            if self.mu < 1e3: # prevent overflow
+            # evaluate the consensus constraint
+            consensus = self.con(self.x_init)
+
+            # prevent overflow
+            if np.linalg.norm(consensus) > ctol:
+
+                # Update the Lagrange multipliers
+                self.y = self.y + self.mu * consensus
+                coef.append(self.y)
+                
+                # Update the penalty coefficient
                 self.mu = rho * self.mu
 
 
@@ -361,7 +367,8 @@ opt = GSCOptALR(blocks=[block1_solve, block2_solve],
 
 opt.solve(max_iter=100, 
           rho=1.5, # must be greater than 1
-          tol=1e-12)
+          tol=1e-5,
+          ctol=1e-5)
 
 
 print('Success: ', opt.success)
