@@ -16,7 +16,7 @@ g = 9.81
 d = 0.8
 mu_cart = 0.03
 mu_pole = 0.03
-uscale = 10
+uscale = 10 # **************************************************************SOMETHING WRONG WITH USCALE***************************************************************
 
 # make the two control problems different
 # initial_state_1 = np.array([0, np.pi, 0, 0])  # [x, theta, dx, dtheta]
