@@ -374,7 +374,7 @@ def block3_solve(v_init: list,
     nc = 4 * (n - 1)  # dynamics constraints
 
     # initial guesses
-    x0 = np.concatenate((np.array([l_init_2, mp_init_2]), x_init_2.flatten(), u_init_2))
+    x0 = np.concatenate((np.array([l_init_3, mp_init_3]), x_init_3.flatten(), u_init_3))
 
     jaxprob = mo.JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                             order=1, xl=vl, xu=vu, cl=0., cu=0.)
