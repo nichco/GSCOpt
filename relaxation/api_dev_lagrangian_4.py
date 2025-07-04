@@ -689,7 +689,7 @@ opt = GSCOptALR(blocks=[block1_solve, block2_solve, block3_solve, block4_solve],
                 x_init=v_init)
 
 opt.solve(max_iter=200, 
-          rho=1.1, # must be greater than 1
+          rho=1.05, # must be greater than 1
           tol=1e-4,
           ctol=1e-4)
 

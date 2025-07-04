@@ -4,6 +4,7 @@ from modopt import CSDLAlphaProblem
 from modopt import SLSQP, IPOPT
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import time
 
 # np.random.seed(0)
 # initial_position = np.random.uniform(-2, 2, 100)  # Seed for reproducibility
@@ -96,9 +97,13 @@ recorder.stop()
 
 sim = csdl.experimental.JaxSimulator(recorder=recorder)
 prob = CSDLAlphaProblem(simulator=sim)
+t1 = time.time()
 optimizer = SLSQP(prob, solver_options={'maxiter': 1000, 'ftol': 1e-9}, turn_off_outputs=True)
+# t1 = time.time()
 optimizer.solve()
 optimizer.print_results()
+t2 = time.time()
+print('Time (s): ', t2 - t1)
 
 
 print('objective: ', j.value)
