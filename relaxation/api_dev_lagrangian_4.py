@@ -640,14 +640,15 @@ class GSCOptALR():
                 self.x_init = block(self.x_init, self.y, self.mu)
 
 
+            # evaluate the consensus constraint
+            consensus = self.con(self.x_init)
+
             # Check convergence
             if all(np.allclose(new, old, rtol=tol) 
-                   for new, old in zip(self.x_init, x_k_minus_1)):
+                   for new, old in zip(self.x_init, x_k_minus_1)) and all(np.abs(consensus) < ctol):
                 self.success = True
                 break
 
-            # evaluate the consensus constraint
-            consensus = self.con(self.x_init)
 
             # prevent overflow
             # if np.linalg.norm(consensus) > ctol:
