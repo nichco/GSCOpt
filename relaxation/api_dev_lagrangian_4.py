@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import time
 import jax
 import jax.numpy as jnp 
@@ -8,6 +7,7 @@ jax.config.update("jax_enable_x64", True)
 import modopt as mo
 from typing import List, Callable
 import gc
+from combo import consensus
 
 n = 30
 dt = 2 / n
@@ -51,12 +51,15 @@ def block1_solve(v_init: list,
     u_init_4 = v_init[15]
 
     def jax_obj(v):
-        l = v[0]
-        mp = v[1]
+        l1 = v[0]
+        mp1 = v[1]
 
-        c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-        c2 = jnp.array([l, mp, l, mp, l_init_3, mp_init_3, l, mp, l_init_2, mp_init_2, l_init_3, mp_init_3])
-        c = c1 - c2
+        # c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
+        # c2 = jnp.array([l, mp, l, mp, l_init_3, mp_init_3, l, mp, l_init_2, mp_init_2, l_init_3, mp_init_3])
+        # c = c1 - c2
+        c_l = consensus([l1, l_init_2, l_init_3, l_init_4]) # consensus for l
+        c_mp = consensus([mp1, mp_init_2, mp_init_3, mp_init_4]) # consensus for mp
+        c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
 
         u = v[n*4+2:].reshape((1, n)) * uscale
         u2 = u_init_2 * uscale
@@ -189,12 +192,15 @@ def block2_solve(v_init: list,
     u_init_4 = v_init[15]
 
     def jax_obj(v):
-        l = v[0]
-        mp = v[1]
+        l2 = v[0]
+        mp2 = v[1]
 
-        c1 = jnp.array([l, mp, l_init_3, mp_init_3, l, mp, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-        c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l, mp, l_init_3, mp_init_3])
-        c = c1 - c2
+        # c1 = jnp.array([l, mp, l_init_3, mp_init_3, l, mp, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
+        # c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l, mp, l_init_3, mp_init_3])
+        # c = c1 - c2
+        c_l = consensus([l_init_1, l2, l_init_3, l_init_4]) # consensus for l
+        c_mp = consensus([mp_init_1, mp2, mp_init_3, mp_init_4]) # consensus for mp
+        c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
 
         u1 = u_init_1 * uscale
         u = v[n*4+2:].reshape((1, n)) * uscale
@@ -329,12 +335,15 @@ def block3_solve(v_init: list,
 
 
     def jax_obj(v):
-        l = v[0]
-        mp = v[1]
+        l3 = v[0]
+        mp3 = v[1]
 
-        c1 = jnp.array([l_init_2, mp_init_2, l, mp, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-        c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l, mp, l_init_1, mp_init_1, l_init_2, mp_init_2, l, mp])
-        c = c1 - c2
+        # c1 = jnp.array([l_init_2, mp_init_2, l, mp, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
+        # c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l, mp, l_init_1, mp_init_1, l_init_2, mp_init_2, l, mp])
+        # c = c1 - c2
+        c_l = consensus([l_init_1, l_init_2, l3, l_init_4]) # consensus for l
+        c_mp = consensus([mp_init_1, mp_init_2, mp3, mp_init_4]) # consensus for mp
+        c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
 
         u1 = u_init_1 * uscale
         u2 = u_init_2 * uscale
@@ -469,12 +478,15 @@ def block4_solve(v_init: list,
 
 
     def jax_obj(v):
-        l = v[0]
-        mp = v[1]
+        l4 = v[0]
+        mp4 = v[1]
 
-        c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l, mp, l, mp, l, mp])
-        c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l_init_2, mp_init_2, l_init_3, mp_init_3])
-        c = c1 - c2
+        # c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l, mp, l, mp, l, mp])
+        # c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l_init_2, mp_init_2, l_init_3, mp_init_3])
+        # c = c1 - c2
+        c_l = consensus([l_init_1, l_init_2, l_init_3, l4]) # consensus for l
+        c_mp = consensus([mp_init_1, mp_init_2, mp_init_3, mp4]) # consensus for mp
+        c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
 
         u1 = u_init_1 * uscale
         u2 = u_init_2 * uscale
@@ -581,23 +593,40 @@ def block4_solve(v_init: list,
 
 # explicitly compute the consensus constraint
 # for global variables
-def con(x_init: List[np.ndarray]
-              ) -> np.ndarray:
+# def constraint(x_init: List[np.ndarray]
+#               ) -> np.ndarray:
     
-    l_init_1 = x_init[0]
-    mp_init_1 = x_init[1]
-    l_init_2 = x_init[2]
-    mp_init_2 = x_init[3]
-    l_init_3 = x_init[4]
-    mp_init_3 = x_init[5]
-    l_init_4 = x_init[6]
-    mp_init_4 = x_init[7]
+#     l_init_1 = x_init[0]
+#     mp_init_1 = x_init[1]
+#     l_init_2 = x_init[2]
+#     mp_init_2 = x_init[3]
+#     l_init_3 = x_init[4]
+#     mp_init_3 = x_init[5]
+#     l_init_4 = x_init[6]
+#     mp_init_4 = x_init[7]
 
-    c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-    c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l_init_2, mp_init_2, l_init_3, mp_init_3])
+#     c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
+#     c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l_init_2, mp_init_2, l_init_3, mp_init_3])
 
-    return c1 - c2
+#     return c1 - c2
 
+
+def constraint(x_init: List[np.ndarray]) -> jnp.ndarray:
+    
+    l1 = x_init[0]
+    mp1 = x_init[1]
+    l2 = x_init[2]
+    mp2 = x_init[3]
+    l3 = x_init[4]
+    mp3 = x_init[5]
+    l4 = x_init[6]
+    mp4 = x_init[7]
+
+    c_l = consensus([l1, l2, l3, l4])
+    c_mp = consensus([mp1, mp2, mp3, mp4])
+    c = jnp.concatenate((c_l, c_mp))
+
+    return c
 
 
 
@@ -605,7 +634,7 @@ def con(x_init: List[np.ndarray]
 class GSCOptALR():
     def __init__(self, 
                  blocks: List[Callable],
-                 con: Callable,
+                 constraint: Callable,
                  x_init: List[np.ndarray]):
         
         self.blocks = blocks
@@ -615,9 +644,9 @@ class GSCOptALR():
         self.solution = None
         self.num_iter = 0
         self.time = None
-        self.con = con
+        self.constraint = constraint
         self.mu = 1.0 # augmented Lagrangian penalty coefficient
-        self.y = np.zeros_like(con(x_init)) # Lagrange multipliers
+        self.y = np.zeros_like(constraint(x_init)) # Lagrange multipliers
 
     def solve(self, 
               max_iter: int=100, 
@@ -641,21 +670,20 @@ class GSCOptALR():
 
 
             # evaluate the consensus constraint
-            consensus = self.con(self.x_init)
+            c = self.constraint(self.x_init)
 
             # Check convergence
             if all(np.allclose(new, old, rtol=tol) 
-                   for new, old in zip(self.x_init, x_k_minus_1)) and all(np.abs(consensus) < ctol):
+                   for new, old in zip(self.x_init, x_k_minus_1)) and all(np.abs(c) < ctol):
                 self.success = True
                 break
 
 
             # prevent overflow
-            # if np.linalg.norm(consensus) > ctol:
-            if any(np.abs(consensus)) > ctol:
+            if any(np.abs(c)) > ctol:
 
                 # Update the Lagrange multipliers
-                self.y = self.y + self.mu * consensus
+                self.y = self.y + self.mu * c
                 coef.append(self.y)
                 
                 # Update the penalty coefficient
@@ -687,7 +715,7 @@ v_init = [l0, mp0, l0, mp0, l0, mp0, l0, mp0, x0, u0, x0, u0, x0, u0, x0, u0]
 
 # block coordinate descent algorithm
 opt = GSCOptALR(blocks=[block1_solve, block2_solve, block3_solve, block4_solve], 
-                con=con,
+                constraint=constraint,
                 x_init=v_init)
 
 opt.solve(max_iter=200, 

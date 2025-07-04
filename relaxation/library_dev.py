@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import time
 import jax
 import jax.numpy as jnp 
@@ -23,23 +22,6 @@ from combo import consensus
 
 # global variables are shared across all blocks
 # local variables are only used within the block
-
-
-
-
-# from dataclasses import dataclass
-
-# @dataclass
-# class Position:
-#     name: str
-#     lon: float
-#     lat: float
-
-
-
-
-
-
 
 
 
@@ -302,7 +284,7 @@ def block2_solve(v_init: list,
 
 
 # explicitly compute the consensus constraint
-def constraint(x_init: List[np.ndarray]) -> np.ndarray:
+def constraint(x_init: List[np.ndarray]) -> jnp.ndarray:
     
     l1 = x_init[0]
     mp1 = x_init[1]
