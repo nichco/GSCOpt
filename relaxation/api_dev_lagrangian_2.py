@@ -19,8 +19,6 @@ mu_pole = 0.03
 uscale = 10
 
 # make the two control problems different
-# initial_state_1 = np.array([0, np.pi, 0, 0])  # [x, theta, dx, dtheta]
-# initial_state_2 = np.array([3, np.pi, 0, 0])  # [x, theta, dx, dtheta]
 initial_state_1 = np.array([0, np.pi, 0, 0])  # [x, theta, dx, dtheta]
 initial_state_2 = np.array([1, np.pi, 0, 0])  # [x, theta, dx, dtheta]
 
@@ -306,6 +304,9 @@ class GSCOptALR():
               rho: float=1.2, # penalty increase factor
               ctol: float=1e-4, # consensus constraint tolerance
               ) -> bool:
+        
+        # check if rho is greater than 1
+        if rho <= 1: raise ValueError("rho must be greater than 1")
 
         t1 = time.time()
 
@@ -366,9 +367,9 @@ opt = GSCOptALR(blocks=[block1_solve, block2_solve],
                 x_init=v_init)
 
 opt.solve(max_iter=100, 
-          rho=1.5, # must be greater than 1
-          tol=1e-5,
-          ctol=1e-5)
+          rho=1.2, # must be greater than 1
+          tol=1e-4,
+          ctol=1e-4)
 
 
 print('Success: ', opt.success)
