@@ -51,7 +51,6 @@ def block1_solve(v_init: list,
         j1 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
         j2 = 0.5 * dt * jnp.sum(u_init_2[:-1]**2 + u_init_2[1:]**2)
 
-        # return 1e-2 * (j1 + j2) + mu * jnp.sum(c**2)#+ y.T @ c + mu * jnp.sum(c**2)
         return 1e-2 * (j1 + j2) + y.T @ c + mu * jnp.sum(c**2)
 
     def jax_con(v):
@@ -169,7 +168,6 @@ def block2_solve(v_init: list,
         j1 = 0.5 * dt * jnp.sum(u_init_1[:-1]**2 + u_init_1[1:]**2)
         j2 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
 
-        # return 1e-2 * (j1 + j2) + mu * jnp.sum(c**2) #+ y.T @ c + mu * jnp.sum(c**2)
         return 1e-2 * (j1 + j2) + y.T @ c + mu * jnp.sum(c**2)
 
     def jax_con(v):
@@ -328,7 +326,7 @@ class GSCOptALR():
             consensus = self.con(self.x_init)
 
             # prevent overflow
-            if np.linalg.norm(consensus) > ctol:
+            if any(np.abs(consensus)) > ctol:
 
                 # Update the Lagrange multipliers
                 self.y = self.y + self.mu * consensus

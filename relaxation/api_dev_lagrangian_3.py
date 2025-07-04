@@ -477,7 +477,8 @@ class GSCOptALR():
             consensus = self.con(self.x_init)
 
             # prevent overflow
-            if np.linalg.norm(consensus) > ctol:
+            # if np.linalg.norm(consensus) > ctol:
+            if any(np.abs(consensus)) > ctol:
 
                 # Update the Lagrange multipliers
                 self.y = self.y + self.mu * consensus
