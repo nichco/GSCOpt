@@ -20,12 +20,17 @@ d = 0.8
 mu_cart = 0.03
 mu_pole = 0.03
 
+
 initial_state_1 = np.array([0, np.pi, 0, 0])
 initial_state_2 = np.array([1, np.pi, 0, 0])
 initial_state_3 = np.array([0.5, np.pi, 0, 0])
 initial_state_4 = np.array([0.75, np.pi, 0, 0])
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
+# initial_state_5 = np.array([1.25, np.pi, 0, 0])
+initial_state_5 = np.array([-1, np.pi, 0, 0])
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 
+
+N = len(initial_states)  # number of cp copies
 
 recorder = csdl.Recorder(inline=True)
 recorder.start()
@@ -40,7 +45,7 @@ mp = csdl.Variable(value=0.4)
 mp.set_as_design_variable(lower=0.1, scaler=1)
 
 
-for k in range(4):
+for k in range(N):
 
     q1_0 = np.linspace(0, d, n)
     q2_0 = np.linspace(np.pi, 0, n)
@@ -129,6 +134,10 @@ print('length: ', l.value)
 # mp:  0.57991946
 # length:  0.36539453
 
+# optimal design variables with five copies
+
+
+
 # distributed results with two copies
 # obj: 8.03710769555307
 # mp: 0.5754734938307297
@@ -144,11 +153,10 @@ print('length: ', l.value)
 
 # distributed results with four copies
 # Objective:  16.063395146305165
-# l1:  0.3110872760510847
-# mp1:  0.6837186937953063
-# l2:  0.3110920497136964
-# mp2:  0.6837031836555887
-# l3:  0.31109741579491706
-# mp3:  0.6836869338140287
-# l4:  0.311101440251502
-# mp4:  0.6836647838678316
+# l:  0.3110872760510847
+# mp:  0.6837186937953063
+
+# distributed results with five copies
+# Objective:  19.935359785734573
+# l1:  0.38396103349119143
+# mp1:  0.5616361237167437
