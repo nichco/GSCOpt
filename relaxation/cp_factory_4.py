@@ -274,7 +274,6 @@ u0 = np.zeros((n))
 l0 = 0.5
 mp0 = 0.4
 
-# v_init = [l0, l0, l0, l0, mp0, mp0, mp0, mp0, x0, x0, x0, x0, u0, u0, u0, u0] # need to expand for changing N
 v_init = []
 # automate the construction of v_init for changing N
 for i in range(N): v_init.append(l0)
@@ -297,17 +296,14 @@ print('Iterations: ', opt.num_iter)
 print('Time (s): ', opt.time)
 print('Objective: ', objective[-1])
 
-l1, l2, l3, l4, mp1, mp2, mp3, mp4, x1, x2, x3, x4, u1, u2, u3, u4 = opt.solution # need to expand for changing N
-print('l1: ', l1)
-print('mp1: ', mp1)
-print('l2: ', l2)
-print('mp2: ', mp2)
-print('l3: ', l3)
-print('mp3: ', mp3)
-print('l4: ', l4)
-print('mp4: ', mp4)
+l_data = opt.solution[0*N : 1*N]
+mp_data = opt.solution[1*N : 2*N]
+x_data = opt.solution[2*N : 3*N]
+u_data = opt.solution[3*N : 4*N]
+print('l: ', l_data)
+print('mp: ', mp_data)
 
-plt.plot(objective[3:]) # skip the first infeasible iteration
+plt.plot(objective[3:]) # skip the first infeasible iteration(s)
 plt.xlabel('Iteration')
 plt.ylabel('Objective function value')
 plt.grid()

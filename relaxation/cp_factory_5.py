@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import time
 import jax
 import jax.numpy as jnp 
@@ -23,7 +24,7 @@ initial_state_1 = np.array([0, np.pi, 0, 0])
 initial_state_2 = np.array([1, np.pi, 0, 0])
 initial_state_3 = np.array([0.5, np.pi, 0, 0])
 initial_state_4 = np.array([0.75, np.pi, 0, 0])
-initial_state_5 = np.array([-1, np.pi, 0, 0])
+initial_state_5 = np.array([-0.5, np.pi, 0, 0])
 # etc.
 initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 
@@ -306,25 +307,57 @@ print('Iterations: ', opt.num_iter)
 print('Time (s): ', opt.time)
 print('Objective: ', objective[-1])
 
-l1, l2, l3, l4, l5, mp1, mp2, mp3, mp4, mp5, x1, x2, x3, x4, x5, u1, u2, u3, u4, u5 = opt.solution # need to expand for changing N
-print('l1: ', l1)
-print('mp1: ', mp1)
-print('l2: ', l2)
-print('mp2: ', mp2)
-print('l3: ', l3)
-print('mp3: ', mp3)
-print('l4: ', l4)
-print('mp4: ', mp4)
-print('l5: ', l5)
-print('mp5: ', mp5)
+l_data = opt.solution[0*N : 1*N]
+mp_data = opt.solution[1*N : 2*N]
+x_data = opt.solution[2*N : 3*N]
+u_data = opt.solution[3*N : 4*N]
+print('l: ', l_data)
+print('mp: ', mp_data)
 
-plt.plot(objective[4:]) # skip the first infeasible iteration
+plt.plot(objective[4:]) # skip the first infeasible iteration(s)
 plt.xlabel('Iteration')
 plt.ylabel('Objective function value')
-plt.grid()
 plt.show()
 
 plt.plot(data)
 plt.xlabel('Iteration')
-plt.grid()
+plt.ylabel('Lagrange multipliers')
+plt.show()
+
+
+
+
+
+
+
+# plot the cart-pole trajectories
+fig, axs = plt.subplots(1, 5, figsize=(17, 3))
+axs = axs.flatten()
+
+cart_width, cart_height = 0.2, 0.1
+cmap   = cm.get_cmap('viridis', n)
+colors = cmap(np.arange(n))
+alpha = np.linspace(0.1, 1, n)
+
+for i in range(N):
+    x = x_data[i]
+    l = l_data[i]
+
+    position = x[0, :]  # cart position
+    angle = x[1, :]    # pole angle
+    pole_x = position + l * np.sin(angle)
+    pole_y = l * np.cos(angle)
+
+    ax = axs[i]
+
+    for i in range(n):
+
+        cart = plt.Rectangle((position[i] - cart_width/2, -cart_height/2), cart_width, cart_height, facecolor='lightgrey', edgecolor='black', alpha=alpha[i])
+        ax.add_patch(cart)
+
+        ax.plot([position[i], pole_x[i]], [0, pole_y[i]], linewidth=2, color='black', alpha=alpha[i])
+        ax.scatter(pole_x[i], pole_y[i], color=colors[i], s=130, zorder=10, alpha=1, edgecolor='black') # mass at end of pole
+
+        ax.set_facecolor('ghostwhite')
+
 plt.show()

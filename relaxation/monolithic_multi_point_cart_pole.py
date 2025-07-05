@@ -25,8 +25,7 @@ initial_state_1 = np.array([0, np.pi, 0, 0])
 initial_state_2 = np.array([1, np.pi, 0, 0])
 initial_state_3 = np.array([0.5, np.pi, 0, 0])
 initial_state_4 = np.array([0.75, np.pi, 0, 0])
-# initial_state_5 = np.array([1.25, np.pi, 0, 0])
-initial_state_5 = np.array([-1, np.pi, 0, 0])
+initial_state_5 = np.array([-0.5, np.pi, 0, 0])
 initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 
 
@@ -135,7 +134,9 @@ print('length: ', l.value)
 # length:  0.36539453
 
 # optimal design variables with five copies
-
+# objective:  [1988.0027767]
+# mp:  [0.57226393]
+# length:  [0.37591915]
 
 
 # distributed results with two copies
@@ -149,14 +150,12 @@ print('length: ', l.value)
 # mp:  0.5787555766374402
 # l:  0.3680019980172635
 
-
-
 # distributed results with four copies
 # Objective:  16.063395146305165
 # l:  0.3110872760510847
 # mp:  0.6837186937953063
 
 # distributed results with five copies
-# Objective:  19.935359785734573
-# l1:  0.38396103349119143
-# mp1:  0.5616361237167437
+# Objective:  19.88002852979266
+# l:  0.37597989045974106
+# mp:  0.5720418927435132
