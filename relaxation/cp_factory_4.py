@@ -69,10 +69,10 @@ def make_functions(i):
         u3 = u3 * uscale # ?????
         u4 = u4 * uscale # ?????
 
-        j1 = 0.5 * dt * jnp.sum(u1[:-1]**2 + u1[1:]**2)
-        j2 = 0.5 * dt * jnp.sum(u2[:-1]**2 + u2[1:]**2)
-        j3 = 0.5 * dt * jnp.sum(u3[:-1]**2 + u3[1:]**2)
-        j4 = 0.5 * dt * jnp.sum(u4[:-1]**2 + u4[1:]**2)
+        j1 = 0.5 * dt * np.sum(u1[:-1]**2 + u1[1:]**2)
+        j2 = 0.5 * dt * np.sum(u2[:-1]**2 + u2[1:]**2)
+        j3 = 0.5 * dt * np.sum(u3[:-1]**2 + u3[1:]**2)
+        j4 = 0.5 * dt * np.sum(u4[:-1]**2 + u4[1:]**2)
         j_list = [j1, j2, j3, j4] # need to expand for changing N
 
         def jax_obj(v):
@@ -287,7 +287,7 @@ opt = GSCOptALR(blocks=functions,
 
 opt.solve(max_iter=100, 
           rho=1.2, # must be greater than 1
-          tol=1e-4,
+          tol=1e-6,
           ctol=1e-4)
 
 

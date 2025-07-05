@@ -26,7 +26,16 @@ initial_state_2 = np.array([1, np.pi, 0, 0])
 initial_state_3 = np.array([0.5, np.pi, 0, 0])
 initial_state_4 = np.array([0.75, np.pi, 0, 0])
 initial_state_5 = np.array([-0.5, np.pi, 0, 0])
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
+initial_state_6 = np.array([-0.25, np.pi, 0, 0])
+initial_state_7 = np.array([-0.25, np.pi+np.pi/2, 0, 0])
+initial_state_8 = np.array([0.5, np.pi+np.pi/2, 0, 0])
+# initial_states = [initial_state_1, initial_state_2]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 
 
 N = len(initial_states)  # number of cp copies
@@ -81,7 +90,6 @@ for k in range(N):
 
     r.set_as_constraint(equals=0, scaler=1E1)
 
-    # x[:, 0].set_as_constraint(equals=np.array([0, np.pi, 0, 0]), scaler=1)
     x[:, 0].set_as_constraint(equals=initial_states[k], scaler=1)
 
     x[:, n - 1].set_as_constraint(equals=np.array([d, 0, 0, 0]), scaler=1)
@@ -103,7 +111,6 @@ sim = csdl.experimental.JaxSimulator(recorder=recorder)
 prob = CSDLAlphaProblem(simulator=sim)
 t1 = time.time()
 optimizer = SLSQP(prob, solver_options={'maxiter': 1000, 'ftol': 1e-9}, turn_off_outputs=True)
-# t1 = time.time()
 optimizer.solve()
 optimizer.print_results()
 t2 = time.time()

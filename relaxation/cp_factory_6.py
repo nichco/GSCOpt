@@ -25,8 +25,9 @@ initial_state_2 = np.array([1, np.pi, 0, 0])
 initial_state_3 = np.array([0.5, np.pi, 0, 0])
 initial_state_4 = np.array([0.75, np.pi, 0, 0])
 initial_state_5 = np.array([-0.5, np.pi, 0, 0])
+initial_state_6 = np.array([-0.25, np.pi, 0, 0])
 # etc.
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
 
 N = len(initial_states) # number of blocks
 
@@ -49,39 +50,45 @@ def make_functions(i):
         l3 = v_init[2]
         l4 = v_init[3]
         l5 = v_init[4]
-        mp1 = v_init[5]
-        mp2 = v_init[6]
-        mp3 = v_init[7]
-        mp4 = v_init[8]
-        mp5 = v_init[9]
-        x1 = v_init[10]
-        x2 = v_init[11]
-        x3 = v_init[12]
-        x4 = v_init[13]
-        x5 = v_init[14]
-        u1 = v_init[15]
-        u2 = v_init[16]
-        u3 = v_init[17]
-        u4 = v_init[18]
-        u5 = v_init[19]
+        l6 = v_init[5]
+        mp1 = v_init[6]
+        mp2 = v_init[7]
+        mp3 = v_init[8]
+        mp4 = v_init[9]
+        mp5 = v_init[10]
+        mp6 = v_init[11]
+        x1 = v_init[12]
+        x2 = v_init[13]
+        x3 = v_init[14]
+        x4 = v_init[15]
+        x5 = v_init[16]
+        x6 = v_init[17]
+        u1 = v_init[18]
+        u2 = v_init[19]
+        u3 = v_init[20]
+        u4 = v_init[21]
+        u5 = v_init[22]
+        u6 = v_init[23]
 
-        l_list = [l1, l2, l3, l4, l5] # need to expand for changing N
-        mp_list = [mp1, mp2, mp3, mp4, mp5] # need to expand for changing N
-        x_list = [x1, x2, x3, x4, x5] # need to expand for changing N
-        u_list = [u1, u2, u3, u4, u5] # need to expand for changing N
+        l_list = [l1, l2, l3, l4, l5, l6] # need to expand for changing N
+        mp_list = [mp1, mp2, mp3, mp4, mp5, mp6] # need to expand for changing N
+        x_list = [x1, x2, x3, x4, x5, x6] # need to expand for changing N
+        u_list = [u1, u2, u3, u4, u5, u6] # need to expand for changing N
 
         u1 = u1 * uscale # ?????
         u2 = u2 * uscale # ?????
         u3 = u3 * uscale # ?????
         u4 = u4 * uscale # ?????
         u5 = u5 * uscale # ?????
+        u6 = u6 * uscale # ?????
 
         j1 = 0.5 * dt * np.sum(u1[:-1]**2 + u1[1:]**2)
         j2 = 0.5 * dt * np.sum(u2[:-1]**2 + u2[1:]**2)
         j3 = 0.5 * dt * np.sum(u3[:-1]**2 + u3[1:]**2)
         j4 = 0.5 * dt * np.sum(u4[:-1]**2 + u4[1:]**2)
         j5 = 0.5 * dt * np.sum(u5[:-1]**2 + u5[1:]**2)
-        j_list = [j1, j2, j3, j4, j5] # need to expand for changing N
+        j6 = 0.5 * dt * np.sum(u6[:-1]**2 + u6[1:]**2)
+        j_list = [j1, j2, j3, j4, j5, j6] # need to expand for changing N
 
         def jax_obj(v):
             li = v[0]
@@ -188,14 +195,16 @@ def constraint(x_init: List[np.ndarray]) -> jnp.ndarray:
     l3 = x_init[2]
     l4 = x_init[3]
     l5 = x_init[4]
-    mp1 = x_init[5]
-    mp2 = x_init[6]
-    mp3 = x_init[7]
-    mp4 = x_init[8]
-    mp5 = x_init[9]
+    l6 = x_init[5]
+    mp1 = x_init[6]
+    mp2 = x_init[7]
+    mp3 = x_init[8]
+    mp4 = x_init[9]
+    mp5 = x_init[10]
+    mp6 = x_init[11]
 
-    c_l = consensus([l1, l2, l3, l4, l5]) # need to expand for changing N
-    c_mp = consensus([mp1, mp2, mp3, mp4, mp5]) # need to expand for changing N
+    c_l = consensus([l1, l2, l3, l4, l5, l6]) # need to expand for changing N
+    c_mp = consensus([mp1, mp2, mp3, mp4, mp5, mp6]) # need to expand for changing N
     return jnp.concatenate((c_l, c_mp))
 
 
@@ -314,7 +323,7 @@ u_data = opt.solution[3*N : 4*N]
 print('l: ', l_data)
 print('mp: ', mp_data)
 
-plt.plot(objective[4:]) # skip the first infeasible iteration(s)
+plt.plot(objective[5:]) # skip the first infeasible iteration(s)
 plt.xlabel('Iteration')
 plt.ylabel('Objective function value')
 plt.show()
@@ -331,7 +340,7 @@ plt.show()
 
 
 # plot the cart-pole trajectories
-fig, axs = plt.subplots(1, 5, figsize=(17, 3))
+fig, axs = plt.subplots(1, 6, figsize=(19, 3))
 axs = axs.flatten()
 
 cart_width, cart_height = 0.2, 0.1

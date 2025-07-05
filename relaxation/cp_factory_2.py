@@ -59,8 +59,8 @@ def make_functions(i):
         u1 = u1 * uscale # ?????
         u2 = u2 * uscale # ?????
 
-        j1 = 0.5 * dt * jnp.sum(u1[:-1]**2 + u1[1:]**2)
-        j2 = 0.5 * dt * jnp.sum(u2[:-1]**2 + u2[1:]**2)
+        j1 = 0.5 * dt * np.sum(u1[:-1]**2 + u1[1:]**2)
+        j2 = 0.5 * dt * np.sum(u2[:-1]**2 + u2[1:]**2)
         j_list = [j1, j2] # need to expand for changing N
 
         def jax_obj(v):
@@ -133,10 +133,13 @@ def make_functions(i):
                                 order=1, xl=vl, xu=vu, cl=0., cu=0.)
 
         optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-9}, turn_off_outputs=True)
+        # optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-6}, turn_off_outputs=True)
+        # optimizer = mo.IPOPT(jaxprob, solver_options={'max_iter': 700, 'tol': 1e-6}, turn_off_outputs=True)
         optimizer.solve()
         optimizer.print_results()
         ans = optimizer.results['x']
-        obj = optimizer.results['fun']
+        obj = optimizer.results['fun'] # for SLSQP
+        # obj = optimizer.results['f'] # for IPOPT
         objective.append(obj)
         gc.collect()
 
@@ -198,7 +201,7 @@ class GSCOptALR():
 
     def solve(self, 
               max_iter: int=100, 
-              tol: float=1e-5,
+              tol: float=1e-6,
               rho: float=1.2, # penalty increase factor
               ctol: float=1e-4, # consensus constraint tolerance
               ) -> bool:
