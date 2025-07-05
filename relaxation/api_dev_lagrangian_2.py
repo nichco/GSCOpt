@@ -29,7 +29,6 @@ def block1_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
@@ -38,7 +37,7 @@ def block1_solve(v_init: list,
     x_init_1 = v_init[4]
     u_init_1 = v_init[5]
     x_init_2 = v_init[6]
-    u_init_2 = v_init[7] * uscale
+    u_init_2 = v_init[7]
 
     def jax_obj(v):
         l = v[0]
@@ -48,8 +47,10 @@ def block1_solve(v_init: list,
         c = x0_1 - x0_2
 
         u = v[n*4+2:].reshape((1, n)) * uscale
+        u2 = u_init_2 * uscale
+
         j1 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
-        j2 = 0.5 * dt * jnp.sum(u_init_2[:-1]**2 + u_init_2[1:]**2)
+        j2 = 0.5 * dt * jnp.sum(u2[:-1]**2 + u2[1:]**2)
 
         return 1e-2 * (j1 + j2) + y.T @ c + mu * jnp.sum(c**2)
 
@@ -103,8 +104,6 @@ def block1_solve(v_init: list,
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_1
     vu_x[:, 0] = initial_state_1
 
@@ -145,14 +144,13 @@ def block2_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
     l_init_2 = v_init[2]
     mp_init_2 = v_init[3]
     x_init_1 = v_init[4]
-    u_init_1 = v_init[5] * uscale
+    u_init_1 = v_init[5]
     x_init_2 = v_init[6]
     u_init_2 = v_init[7]
 
@@ -162,10 +160,11 @@ def block2_solve(v_init: list,
         x0_1 = jnp.array([l_init_1, mp_init_1])
         x0_2 = jnp.array([l, mp])
         c = x0_1 - x0_2
-        penalty = jnp.sum(c**2)
 
         u = v[n*4+2:].reshape((1, n)) * uscale
-        j1 = 0.5 * dt * jnp.sum(u_init_1[:-1]**2 + u_init_1[1:]**2)
+        u1 = u_init_1 * uscale
+
+        j1 = 0.5 * dt * jnp.sum(u1[:-1]**2 + u1[1:]**2)
         j2 = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
 
         return 1e-2 * (j1 + j2) + y.T @ c + mu * jnp.sum(c**2)
@@ -220,8 +219,6 @@ def block2_solve(v_init: list,
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_2
     vu_x[:, 0] = initial_state_2
 

@@ -54,9 +54,6 @@ def block1_solve(v_init: list,
         l1 = v[0]
         mp1 = v[1]
 
-        # c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-        # c2 = jnp.array([l, mp, l, mp, l_init_3, mp_init_3, l, mp, l_init_2, mp_init_2, l_init_3, mp_init_3])
-        # c = c1 - c2
         c_l = consensus([l1, l_init_2, l_init_3, l_init_4]) # consensus for l
         c_mp = consensus([mp1, mp_init_2, mp_init_3, mp_init_4]) # consensus for mp
         c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
@@ -107,24 +104,15 @@ def block1_solve(v_init: list,
         return 10 * c.flatten()
     
 
-    # Compute the variable bounds
-
-    vl_l = 0.1
-    vu_l = 5.0
-    vl_mp = 0.1
-    vu_mp = np.inf
 
     # control bounds
     vl_u = np.full((n), -50 / uscale)
     vu_u = np.full((n),  50 / uscale)
 
-
     # initial condition
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_1
     vu_x[:, 0] = initial_state_1
 
@@ -133,8 +121,8 @@ def block1_solve(v_init: list,
     vu_x[:, -1] = np.array([d, 0, 0, 0])
 
     # concatenate all bounds
-    vl = np.concatenate((np.array([vl_l, vl_mp]), vl_x.flatten(), vl_u))
-    vu = np.concatenate((np.array([vu_l, vu_mp]), vu_x.flatten(), vu_u))
+    vl = np.concatenate((np.array([0.1, 0.1]), vl_x.flatten(), vl_u))
+    vu = np.concatenate((np.array([5.0, np.inf]), vu_x.flatten(), vu_u))
 
     nc = 4 * (n - 1)  # dynamics constraints
 
@@ -172,7 +160,6 @@ def block2_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
@@ -195,9 +182,6 @@ def block2_solve(v_init: list,
         l2 = v[0]
         mp2 = v[1]
 
-        # c1 = jnp.array([l, mp, l_init_3, mp_init_3, l, mp, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-        # c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l, mp, l_init_3, mp_init_3])
-        # c = c1 - c2
         c_l = consensus([l_init_1, l2, l_init_3, l_init_4]) # consensus for l
         c_mp = consensus([mp_init_1, mp2, mp_init_3, mp_init_4]) # consensus for mp
         c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
@@ -248,24 +232,14 @@ def block2_solve(v_init: list,
         return 10 * c.flatten()
     
 
-    # Compute the variable bounds
-
-    vl_l = 0.1
-    vu_l = 5.0
-    vl_mp = 0.1
-    vu_mp = np.inf
-
     # control bounds
     vl_u = np.full((n), -50 / uscale)
     vu_u = np.full((n),  50 / uscale)
-
 
     # initial condition
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_2
     vu_x[:, 0] = initial_state_2
 
@@ -274,8 +248,8 @@ def block2_solve(v_init: list,
     vu_x[:, -1] = np.array([d, 0, 0, 0])
 
     # concatenate all bounds
-    vl = np.concatenate((np.array([vl_l, vl_mp]), vl_x.flatten(), vl_u))
-    vu = np.concatenate((np.array([vu_l, vu_mp]), vu_x.flatten(), vu_u))
+    vl = np.concatenate((np.array([0.1, 0.1]), vl_x.flatten(), vl_u))
+    vu = np.concatenate((np.array([5.0, np.inf]), vu_x.flatten(), vu_u))
 
     nc = 4 * (n - 1)  # dynamics constraints
 
@@ -314,7 +288,6 @@ def block3_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
@@ -338,9 +311,6 @@ def block3_solve(v_init: list,
         l3 = v[0]
         mp3 = v[1]
 
-        # c1 = jnp.array([l_init_2, mp_init_2, l, mp, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-        # c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l, mp, l_init_1, mp_init_1, l_init_2, mp_init_2, l, mp])
-        # c = c1 - c2
         c_l = consensus([l_init_1, l_init_2, l3, l_init_4]) # consensus for l
         c_mp = consensus([mp_init_1, mp_init_2, mp3, mp_init_4]) # consensus for mp
         c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
@@ -391,24 +361,14 @@ def block3_solve(v_init: list,
         return 10 * c.flatten()
     
 
-    # Compute the variable bounds
-
-    vl_l = 0.1
-    vu_l = 5.0
-    vl_mp = 0.1
-    vu_mp = np.inf
-
     # control bounds
     vl_u = np.full((n), -50 / uscale)
     vu_u = np.full((n),  50 / uscale)
-
 
     # initial condition
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_3
     vu_x[:, 0] = initial_state_3
 
@@ -417,8 +377,8 @@ def block3_solve(v_init: list,
     vu_x[:, -1] = np.array([d, 0, 0, 0])
 
     # concatenate all bounds
-    vl = np.concatenate((np.array([vl_l, vl_mp]), vl_x.flatten(), vl_u))
-    vu = np.concatenate((np.array([vu_l, vu_mp]), vu_x.flatten(), vu_u))
+    vl = np.concatenate((np.array([0.1, 0.1]), vl_x.flatten(), vl_u))
+    vu = np.concatenate((np.array([5.0, np.inf]), vu_x.flatten(), vu_u))
 
     nc = 4 * (n - 1)  # dynamics constraints
 
@@ -457,7 +417,6 @@ def block4_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
@@ -481,9 +440,6 @@ def block4_solve(v_init: list,
         l4 = v[0]
         mp4 = v[1]
 
-        # c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l, mp, l, mp, l, mp])
-        # c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l_init_2, mp_init_2, l_init_3, mp_init_3])
-        # c = c1 - c2
         c_l = consensus([l_init_1, l_init_2, l_init_3, l4]) # consensus for l
         c_mp = consensus([mp_init_1, mp_init_2, mp_init_3, mp4]) # consensus for mp
         c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
@@ -534,24 +490,14 @@ def block4_solve(v_init: list,
         return 10 * c.flatten()
     
 
-    # Compute the variable bounds
-
-    vl_l = 0.1
-    vu_l = 5.0
-    vl_mp = 0.1
-    vu_mp = np.inf
-
     # control bounds
     vl_u = np.full((n), -50 / uscale)
     vu_u = np.full((n),  50 / uscale)
-
 
     # initial condition
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_4
     vu_x[:, 0] = initial_state_4
 
@@ -560,8 +506,8 @@ def block4_solve(v_init: list,
     vu_x[:, -1] = np.array([d, 0, 0, 0])
 
     # concatenate all bounds
-    vl = np.concatenate((np.array([vl_l, vl_mp]), vl_x.flatten(), vl_u))
-    vu = np.concatenate((np.array([vu_l, vu_mp]), vu_x.flatten(), vu_u))
+    vl = np.concatenate((np.array([0.1, 0.1]), vl_x.flatten(), vl_u))
+    vu = np.concatenate((np.array([5.0, np.inf]), vu_x.flatten(), vu_u))
 
     nc = 4 * (n - 1)  # dynamics constraints
 
@@ -593,24 +539,6 @@ def block4_solve(v_init: list,
 
 # explicitly compute the consensus constraint
 # for global variables
-# def constraint(x_init: List[np.ndarray]
-#               ) -> np.ndarray:
-    
-#     l_init_1 = x_init[0]
-#     mp_init_1 = x_init[1]
-#     l_init_2 = x_init[2]
-#     mp_init_2 = x_init[3]
-#     l_init_3 = x_init[4]
-#     mp_init_3 = x_init[5]
-#     l_init_4 = x_init[6]
-#     mp_init_4 = x_init[7]
-
-#     c1 = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2, l_init_4, mp_init_4, l_init_4, mp_init_4, l_init_4, mp_init_4])
-#     c2 = jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3, l_init_1, mp_init_1, l_init_2, mp_init_2, l_init_3, mp_init_3])
-
-#     return c1 - c2
-
-
 def constraint(x_init: List[np.ndarray]) -> jnp.ndarray:
     
     l1 = x_init[0]

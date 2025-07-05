@@ -30,7 +30,6 @@ def block1_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
@@ -48,7 +47,7 @@ def block1_solve(v_init: list,
     def jax_obj(v):
         l1 = v[0]
         mp1 = v[1]
-        # c = jnp.array([l_init_2, mp_init_2, l_init_3, mp_init_3, l_init_2, mp_init_2]) - jnp.array([l, mp, l, mp, l_init_3, mp_init_3])
+
         c_l = consensus([l1, l_init_2, l_init_3]) # consensus for l
         c_mp = consensus([mp1, mp_init_2, mp_init_3]) # consensus for mp
         c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
@@ -113,8 +112,6 @@ def block1_solve(v_init: list,
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_1
     vu_x[:, 0] = initial_state_1
 
@@ -160,7 +157,6 @@ def block2_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
@@ -178,7 +174,7 @@ def block2_solve(v_init: list,
     def jax_obj(v):
         l2 = v[0]
         mp2 = v[1]
-        # c = jnp.array([l, mp, l_init_3, mp_init_3, l, mp]) - jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l_init_3, mp_init_3])
+
         c_l = consensus([l_init_1, l2, l_init_3]) # consensus for l
         c_mp = consensus([mp_init_1, mp2, mp_init_3]) # consensus for mp
         c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
@@ -244,8 +240,6 @@ def block2_solve(v_init: list,
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_2
     vu_x[:, 0] = initial_state_2
 
@@ -292,7 +286,6 @@ def block3_solve(v_init: list,
                  y: np.ndarray = None, # lagrange multipliers
                  mu: float = 1, # penalty coefficient
                  ) -> list:
-    # design variable(s): all
 
     l_init_1 = v_init[0]
     mp_init_1 = v_init[1]
@@ -310,7 +303,7 @@ def block3_solve(v_init: list,
     def jax_obj(v):
         l3 = v[0]
         mp3 = v[1]
-        # c = jnp.array([l_init_2, mp_init_2, l, mp, l_init_2, mp_init_2]) - jnp.array([l_init_1, mp_init_1, l_init_1, mp_init_1, l, mp])
+
         c_l = consensus([l_init_1, l_init_2, l3]) # consensus for l
         c_mp = consensus([mp_init_1, mp_init_2, mp3]) # consensus for mp
         c = jnp.concatenate((c_l, c_mp)) # consensus for all global vars
@@ -375,8 +368,6 @@ def block3_solve(v_init: list,
     vl_x = np.full((4, n), -np.inf)
     vu_x = np.full((4, n),  np.inf)
 
-    # vl_x[:, 0] = np.array([0, np.pi, 0, 0])
-    # vu_x[:, 0] = np.array([0, np.pi, 0, 0])
     vl_x[:, 0] = initial_state_3
     vu_x[:, 0] = initial_state_3
 
