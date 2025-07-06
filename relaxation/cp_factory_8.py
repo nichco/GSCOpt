@@ -27,7 +27,7 @@ initial_state_4 = np.array([0.75, np.pi, 0, 0])
 initial_state_5 = np.array([-0.5, np.pi, 0, 0])
 initial_state_6 = np.array([-0.25, np.pi, 0, 0])
 initial_state_7 = np.array([-0.25, np.pi+np.pi/2, 0, 0])
-initial_state_8 = np.array([0.5, np.pi+np.pi/2, 0, 0])
+initial_state_8 = np.array([0, np.pi+np.pi/2, 0, 0])
 # etc.
 initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 

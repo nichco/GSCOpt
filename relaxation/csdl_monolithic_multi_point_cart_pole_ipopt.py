@@ -31,10 +31,10 @@ initial_state_7 = np.array([-0.25, np.pi+np.pi/2, 0, 0])
 initial_state_8 = np.array([0.5, np.pi+np.pi/2, 0, 0])
 # initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3]
-# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 
 
@@ -55,8 +55,12 @@ mp.set_as_design_variable(lower=0.1, scaler=1)
 
 for k in range(N):
 
-    q1_0 = np.linspace(0, d, n)
-    q2_0 = np.linspace(np.pi, 0, n)
+    i_s = initial_states[k]
+
+    # q1_0 = np.linspace(0, d, n)
+    # q2_0 = np.linspace(np.pi, 0, n)
+    q1_0 = np.linspace(i_s[0], d, n)
+    q2_0 = np.linspace(i_s[1], 0, n)
     q3_0 = np.zeros(n)
     q4_0 = np.zeros(n)
     x = csdl.Variable(value=np.vstack((q1_0, q2_0, q3_0, q4_0)))
@@ -90,7 +94,7 @@ for k in range(N):
 
     r.set_as_constraint(equals=0, scaler=1E1)
 
-    x[:, 0].set_as_constraint(equals=initial_states[k], scaler=1)
+    x[:, 0].set_as_constraint(equals=i_s, scaler=1)
 
     x[:, n - 1].set_as_constraint(equals=np.array([d, 0, 0, 0]), scaler=1)
 
