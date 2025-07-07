@@ -74,13 +74,17 @@ vl_mp = 0.1
 vu_mp = np.inf
 
 # control bounds
-vl_u = np.full((n), -50 / uscale)
-vu_u = np.full((n),  50 / uscale)
+vl_u = np.full((n), -40 / uscale)
+vu_u = np.full((n),  40 / uscale)
 
 
 # initial condition
+# vl_x = np.full((4, n), -np.inf)
 vl_x = np.full((4, n), -np.inf)
 vu_x = np.full((4, n),  np.inf)
+
+vl_x[1, :] = -1e-3 # lower bound on angle
+vl_x[0, :] = x_init[0] - 1e-3  # lower bound on cart position
 
 vl_x[:, 0] = x_init
 vu_x[:, 0] = x_init
@@ -144,11 +148,18 @@ print('mp: ', mp)
 
 
 
-
-
 t = np.linspace(0, n*dt, n)
 position = x[0, :]  # cart position
 angle = x[1, :]    # pole angle
+
+
+plt.plot(position)
+plt.plot(angle)
+plt.plot(u.flatten())
+plt.show()
+
+
+
 
 # Compute pole tip position
 pole_x = position + l * np.sin(angle)

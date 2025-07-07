@@ -20,9 +20,7 @@ mu_pole = 0.03
 uscale = 10
 
 initial_state_1 = np.array([0, np.pi, 0, 0])
-initial_state_2 = np.array([1, np.pi, 0, 0])
-initial_state_3 = np.array([0.5, np.pi, 0, 0])
-initial_state_4 = np.array([0.75, np.pi, 0, 0])
+initial_state_2 = np.array([0.5, np.pi, 0, 0])
 # etc.
 initial_states = [initial_state_1, initial_state_2]
 
@@ -112,11 +110,13 @@ def make_functions(i):
             return 10 * c.flatten()
         
         # control bounds
-        vl_u = np.full((n), -50 / uscale)
-        vu_u = np.full((n),  50 / uscale)
+        vl_u = np.full((n), -40 / uscale)
+        vu_u = np.full((n),  40 / uscale)
         # initial condition
         vl_x = np.full((4, n), -np.inf)
         vu_x = np.full((4, n),  np.inf)
+        vl_x[1, :] = -1e-3 # lower bound on angle
+        vl_x[0, :] = initial_states[i][0] - 1e-3  # lower bound on cart position
         vl_x[:, 0] = initial_states[i]
         vu_x[:, 0] = initial_states[i]
         # final condition
@@ -132,14 +132,11 @@ def make_functions(i):
         jaxprob = mo.JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                                 order=1, xl=vl, xu=vu, cl=0., cu=0.)
 
-        optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-9}, turn_off_outputs=True)
-        # optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-6}, turn_off_outputs=True)
-        # optimizer = mo.IPOPT(jaxprob, solver_options={'max_iter': 700, 'tol': 1e-6}, turn_off_outputs=True)
+        optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-7}, turn_off_outputs=True)
         optimizer.solve()
         optimizer.print_results()
         ans = optimizer.results['x']
-        obj = optimizer.results['fun'] # for SLSQP
-        # obj = optimizer.results['f'] # for IPOPT
+        obj = optimizer.results['fun']
         objective.append(obj)
         gc.collect()
 
@@ -274,7 +271,7 @@ opt = GSCOptALR(blocks=functions,
 
 opt.solve(max_iter=100, 
           rho=1.2, # must be greater than 1
-          tol=1e-4,
+          tol=1e-5,
           ctol=1e-4)
 
 

@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import time
 import jax
 import jax.numpy as jnp 
@@ -20,9 +21,8 @@ mu_pole = 0.03
 uscale = 10
 
 initial_state_1 = np.array([0, np.pi, 0, 0])
-initial_state_2 = np.array([1, np.pi, 0, 0])
-initial_state_3 = np.array([0.5, np.pi, 0, 0])
-initial_state_4 = np.array([0.75, np.pi, 0, 0])
+initial_state_2 = np.array([0.5, np.pi, 0, 0])
+initial_state_3 = np.array([0.25, np.pi, 0, 0])
 # etc.
 initial_states = [initial_state_1, initial_state_2, initial_state_3]
 
@@ -118,11 +118,13 @@ def make_functions(i):
             return 10 * c.flatten()
         
         # control bounds
-        vl_u = np.full((n), -50 / uscale)
-        vu_u = np.full((n),  50 / uscale)
+        vl_u = np.full((n), -40 / uscale)
+        vu_u = np.full((n),  40 / uscale)
         # initial condition
         vl_x = np.full((4, n), -np.inf)
         vu_x = np.full((4, n),  np.inf)
+        vl_x[1, :] = -1e-3 # lower bound on angle
+        vl_x[0, :] = initial_states[i][0] - 1e-3  # lower bound on cart position
         vl_x[:, 0] = initial_states[i]
         vu_x[:, 0] = initial_states[i]
         # final condition
@@ -138,7 +140,7 @@ def make_functions(i):
         jaxprob = mo.JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                                 order=1, xl=vl, xu=vu, cl=0., cu=0.)
 
-        optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-9}, turn_off_outputs=True)
+        optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-7}, turn_off_outputs=True)
         optimizer.solve()
         optimizer.print_results()
         ans = optimizer.results['x']
@@ -304,4 +306,44 @@ plt.show()
 plt.plot(data)
 plt.xlabel('Iteration')
 plt.grid()
+plt.show()
+
+
+
+
+
+
+
+
+
+# plot the cart-pole trajectories
+fig, axs = plt.subplots(1, 3, figsize=(12, 3))
+axs = axs.flatten()
+
+cart_width, cart_height = 0.2, 0.1
+cmap   = cm.get_cmap('viridis', n)
+colors = cmap(np.arange(n))
+alpha = np.linspace(0.1, 1, n)
+
+for i in range(N):
+    x = x_data[i]
+    l = l_data[i]
+
+    position = x[0, :]  # cart position
+    angle = x[1, :]    # pole angle
+    pole_x = position + l * np.sin(angle)
+    pole_y = l * np.cos(angle)
+
+    ax = axs[i]
+
+    for i in range(n):
+
+        cart = plt.Rectangle((position[i] - cart_width/2, -cart_height/2), cart_width, cart_height, facecolor='lightgrey', edgecolor='black', alpha=alpha[i])
+        ax.add_patch(cart)
+
+        ax.plot([position[i], pole_x[i]], [0, pole_y[i]], linewidth=2, color='black', alpha=alpha[i])
+        ax.scatter(pole_x[i], pole_y[i], color=colors[i], s=130, zorder=10, alpha=1, edgecolor='black') # mass at end of pole
+
+        ax.set_facecolor('ghostwhite')
+
 plt.show()

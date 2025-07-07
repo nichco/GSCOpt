@@ -3,14 +3,50 @@ import numpy as np
 from modopt import CSDLAlphaProblem
 from modopt import SLSQP, IPOPT
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from matplotlib.animation import FuncAnimation
 import time
 
-# np.random.seed(0)
-# initial_position = np.random.uniform(-2, 2, 100)  # Seed for reproducibility
+# 2
+# objective:  [780.64659782]
+# mp:  [0.57994239]
+# length:  [0.37642662]
 
-# dynamics from https://sharpneat.sourceforge.io/research/cart-pole/cart-pole-equations.html
-# co-design problem by me
+# 3
+# objective:  [1169.81073232]
+# mp:  [0.58082863]
+# length:  [0.37607782]
+
+# 4
+# objective:  [1577.79095333]
+# mp:  [0.581217]
+# length:  [0.37146522]
+
+# 5
+# objective:  [1956.1952883]
+# mp:  [0.57440568]
+# length:  [0.38019928]
+
+# 6
+# objective:  [2335.2196999]
+# mp:  [0.57385703]
+# length:  [0.38268195]
+
+# 7
+# objective:  [2663.09899277]
+# mp:  [0.56149822]
+# length:  [0.40423861]
+
+# 8
+# objective:  [2920.92522549]
+# mp:  [0.56564313]
+# length:  [0.41534208]
+
+# 9
+# objective:  [3347.99159932]
+# mp:  [0.53598422]
+# length:  [0.44051492]
+
 
 n = 30
 dt = 2 / n
@@ -22,13 +58,14 @@ mu_pole = 0.03
 
 
 initial_state_1 = np.array([0, np.pi, 0, 0])
-initial_state_2 = np.array([1, np.pi, 0, 0])
-initial_state_3 = np.array([0.5, np.pi, 0, 0])
+initial_state_2 = np.array([0.5, np.pi, 0, 0])
+initial_state_3 = np.array([0.25, np.pi, 0, 0])
 initial_state_4 = np.array([0.75, np.pi, 0, 0])
 initial_state_5 = np.array([-0.5, np.pi, 0, 0])
 initial_state_6 = np.array([-0.25, np.pi, 0, 0])
-initial_state_7 = np.array([-0.25, np.pi+np.pi/2, 0, 0])
-initial_state_8 = np.array([0, np.pi+np.pi/2, 0, 0])
+initial_state_7 = np.array([0, np.pi+np.pi/2, 0, 0])
+initial_state_8 = np.array([0.3, np.pi+np.pi/2, 0, 0])
+initial_state_9 = np.array([-0.5, np.pi+np.pi/2, 0, 0])
 
 # initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3]
@@ -36,7 +73,8 @@ initial_state_8 = np.array([0, np.pi+np.pi/2, 0, 0])
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
 
 
 N = len(initial_states)  # number of cp copies
@@ -53,7 +91,7 @@ l_hat = l / 2
 mp = csdl.Variable(value=0.4)
 mp.set_as_design_variable(lower=0.1, scaler=1)
 
-
+x_data = []
 for k in range(N):
 
     i_s = initial_states[k]
@@ -66,9 +104,10 @@ for k in range(N):
     q4_0 = np.zeros(n)
     x = csdl.Variable(value=np.vstack((q1_0, q2_0, q3_0, q4_0)))
     x.set_as_design_variable(scaler=1)
+    x_data.append(x)
 
     u = csdl.Variable(value=np.zeros((n)))
-    u.set_as_design_variable(lower=-50, upper=50, scaler=1e-1)
+    u.set_as_design_variable(lower=-40, upper=40, scaler=1e-1)
 
     f = csdl.Variable(value=np.zeros((4, n)))
     for i in csdl.frange(n):
@@ -96,6 +135,9 @@ for k in range(N):
     r.set_as_constraint(equals=0, scaler=1E1)
 
     x[:, 0].set_as_constraint(equals=i_s, scaler=1)
+
+    x[1, :].set_as_constraint(lower=-1e-3, scaler=1) # lower bound on angle
+    x[0, :].set_as_constraint(lower=i_s[0]-1e-3, scaler=1)  # lower bound on cart position
 
     x[:, n - 1].set_as_constraint(equals=np.array([d, 0, 0, 0]), scaler=1)
 
@@ -128,46 +170,48 @@ print('length: ', l.value)
 
 
 
-# optimal design variables with two copies
-# obj: 8.03710769545161
-# mp:  0.57547296
-# length:  0.36931781
 
 
-# optimal design variables with three copies
-# objective:  12.0105464351
-# mp:  0.57870551
-# length:  0.36804107
 
 
-# optimal design variables with four copies
-# objective:  16.0860669215
-# mp:  0.57991946
-# length:  0.36539453
-
-# optimal design variables with five copies
-# objective:  [1988.0027767]
-# mp:  [0.57226393]
-# length:  [0.37591915]
 
 
-# distributed results with two copies
-# obj: 8.03710769555307
-# mp: 0.5754734938307297
-# length: 0.3693175514897895
 
 
-# distributed results with three copies
-# objective:  12.010546218062135
-# mp:  0.5787555766374402
-# l:  0.3680019980172635
 
-# distributed results with four copies
-# Objective:  16.063395146305165
-# l:  0.3110872760510847
-# mp:  0.6837186937953063
 
-# distributed results with five copies
-# Objective:  19.88002852979266
-# l:  0.37597989045974106
-# mp:  0.5720418927435132
+
+x_data = [xx.value for xx in x_data]
+l_data = [l.value for i in range(N)]
+
+# plot the cart-pole trajectories
+fig, axs = plt.subplots(2, 4, figsize=(15, 6))
+axs = axs.flatten()
+
+cart_width, cart_height = 0.2, 0.1
+cmap   = cm.get_cmap('viridis', n)
+colors = cmap(np.arange(n))
+alpha = np.linspace(0.1, 1, n)
+
+for i in range(N):
+    x = x_data[i]
+    l = l_data[i]
+
+    position = x[0, :]  # cart position
+    angle = x[1, :]    # pole angle
+    pole_x = position + l * np.sin(angle)
+    pole_y = l * np.cos(angle)
+
+    ax = axs[i]
+
+    for i in range(n):
+
+        cart = plt.Rectangle((position[i] - cart_width/2, -cart_height/2), cart_width, cart_height, facecolor='lightgrey', edgecolor='black', alpha=alpha[i])
+        ax.add_patch(cart)
+
+        ax.plot([position[i], pole_x[i]], [0, pole_y[i]], linewidth=2, color='black', alpha=alpha[i])
+        ax.scatter(pole_x[i], pole_y[i], color=colors[i], s=130, zorder=10, alpha=1, edgecolor='black') # mass at end of pole
+
+        ax.set_facecolor('ghostwhite')
+
+plt.show()
