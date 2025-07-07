@@ -66,6 +66,7 @@ initial_state_6 = np.array([-0.25, np.pi, 0, 0])
 initial_state_7 = np.array([0, np.pi+np.pi/2, 0, 0])
 initial_state_8 = np.array([0.3, np.pi+np.pi/2, 0, 0])
 initial_state_9 = np.array([-0.5, np.pi+np.pi/2, 0, 0])
+initial_state_10 = np.array([-3, np.pi, 0, 0])
 
 # initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3]
@@ -74,7 +75,8 @@ initial_state_9 = np.array([-0.5, np.pi+np.pi/2, 0, 0])
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
 
 
 N = len(initial_states)  # number of cp copies
@@ -185,7 +187,7 @@ x_data = [xx.value for xx in x_data]
 l_data = [l.value for i in range(N)]
 
 # plot the cart-pole trajectories
-fig, axs = plt.subplots(2, 4, figsize=(15, 6))
+fig, axs = plt.subplots(2, 5, figsize=(17, 6))
 axs = axs.flatten()
 
 cart_width, cart_height = 0.2, 0.1
