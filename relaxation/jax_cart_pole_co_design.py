@@ -6,6 +6,7 @@ import time
 import jax
 import jax.numpy as jnp 
 jax.config.update("jax_enable_x64", True)
+import tracemalloc
 
 n = 30
 dt = 2 / n
@@ -115,7 +116,7 @@ mp0 = 0.4
 x0 = np.concatenate((np.array([l0, mp0]), np.vstack((q1_0, q2_0, q3_0, q4_0)).flatten(), u0))
 
 
-
+tracemalloc.start()
 
 jaxprob = JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                     name=f'cart_pole_jax', order=1,
@@ -129,6 +130,12 @@ optimizer = SLSQP(jaxprob, solver_options={'maxiter': 500, 'ftol': 1e-9}, turn_o
 optimizer.solve()
 optimizer.print_results()
 
+
+
+# print peak memory usage
+current, peak = tracemalloc.get_traced_memory()
+tracemalloc.stop()
+print(f"Peak memory usage: {peak / 1e6} MB")
 
 
 v = optimizer.results['x']

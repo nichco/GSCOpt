@@ -9,6 +9,7 @@ import modopt as mo
 from typing import List, Callable
 import gc
 from combo import consensus
+import tracemalloc
 
 
 n = 30
@@ -343,10 +344,17 @@ opt = GSCOptALR(blocks=functions,
                 constraint=constraint,
                 x_init=v_init)
 
+tracemalloc.start()
+
 opt.solve(max_iter=150, 
           rho=1.2, # must be greater than 1
           tol=1e-7,
           ctol=1e-4)
+
+# print peak memory usage
+current, peak = tracemalloc.get_traced_memory()
+tracemalloc.stop()
+print(f"Peak memory usage: {peak / 1e6} MB")
 
 
 print('Success: ', opt.success)
