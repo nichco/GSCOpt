@@ -38,9 +38,9 @@ initial_state_10 = np.array([-3, np.pi, 0, 0])
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
-# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
 
 
 N = len(initial_states)
@@ -207,7 +207,7 @@ jaxprob = JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
 
 
 
-optimizer = SLSQP(jaxprob, solver_options={'maxiter': 500, 'ftol': 1e-7}, turn_off_outputs=True)
+optimizer = SLSQP(jaxprob, solver_options={'maxiter': 3000, 'ftol': 1e-7}, turn_off_outputs=True)
 optimizer.solve()
 optimizer.print_results()
 
