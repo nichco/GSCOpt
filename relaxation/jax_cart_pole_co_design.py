@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from modopt import JaxProblem, SLSQP
-import time
 import jax
 import jax.numpy as jnp 
 jax.config.update("jax_enable_x64", True)
@@ -80,7 +79,6 @@ vu_u = np.full((n),  40 / uscale)
 
 
 # initial condition
-# vl_x = np.full((4, n), -np.inf)
 vl_x = np.full((4, n), -np.inf)
 vu_x = np.full((4, n),  np.inf)
 
@@ -107,9 +105,7 @@ q1_0 = np.linspace(0, d, n)
 q2_0 = np.linspace(np.pi, 0, n)
 q3_0 = np.zeros(n)
 q4_0 = np.zeros(n)
-
 u0 = np.zeros((n))
-
 l0 = 0.5
 mp0 = 0.4
 
@@ -126,7 +122,7 @@ jaxprob = JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
 
 
 
-optimizer = SLSQP(jaxprob, solver_options={'maxiter': 500, 'ftol': 1e-9}, turn_off_outputs=True)
+optimizer = SLSQP(jaxprob, solver_options={'maxiter': 500, 'ftol': 1e-7}, turn_off_outputs=True)
 optimizer.solve()
 optimizer.print_results()
 
@@ -213,16 +209,3 @@ ani = FuncAnimation(fig, animate, frames=len(t), blit=True, interval=30)
 # ani.save("cart_pole_animation.gif", writer=PillowWriter(fps=30))
 
 plt.show()
-
-
-
-
-# results:
-# obj: 3.8284262931068933
-# l:  0.3870413653072123
-# mp:  0.5760740845717346
-
-# distributed:
-# obj: 2 * 3.828426293192311
-# l2:  0.38703993961272476
-# mp2:  0.5760724540187763

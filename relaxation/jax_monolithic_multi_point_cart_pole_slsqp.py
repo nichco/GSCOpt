@@ -17,9 +17,6 @@ mu_cart = 0.03
 mu_pole = 0.03
 uscale = 10
 
-# x_init  = np.array([0, np.pi, 0, 0])
-# x_final = np.array([d, 0, 0, 0])
-
 initial_state_1 = np.array([0, np.pi, 0, 0])
 initial_state_2 = np.array([0.5, np.pi, 0, 0])
 initial_state_3 = np.array([0.25, np.pi, 0, 0])
@@ -31,16 +28,15 @@ initial_state_8 = np.array([0.3, np.pi+np.pi/2, 0, 0])
 initial_state_9 = np.array([-0.5, np.pi+np.pi/2, 0, 0])
 initial_state_10 = np.array([-3, np.pi, 0, 0])
 
-# initial_states = [initial_state_1]
 # initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
-# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
 
 
 N = len(initial_states)
@@ -58,14 +54,10 @@ vpb = 2 + n*5 # variables per block
 def jax_obj(v):
 
     j = 0
-
     for i in range(N):
         ui = v[i * vpb + 2 + n*4 : i * vpb + 2 + n*4 + n].reshape((1, n)) * uscale
         ji = 0.5 * dt * jnp.sum(ui[0, :-1]**2 + ui[0, 1:]**2)
         j = j + ji
-
-    # u = v[n*4+2:].reshape((1, n)) * uscale
-    # j = 0.5 * dt * jnp.sum(u[0, :-1]**2 + u[0, 1:]**2)
 
     return 1e-2 * j
 
@@ -74,7 +66,6 @@ def jax_obj(v):
 def jax_con(v):
 
     c = []
-
     for i in range(N):
         li = v[i * vpb]
         li_hat = li / 2
@@ -90,11 +81,9 @@ def jax_con(v):
         sin_theta_i = jnp.sin(theta_i)
         cos_theta_i = jnp.cos(theta_i)
 
-        ddx_num_i = (
-                mpi * g * sin_theta_i * cos_theta_i
+        ddx_num_i = (mpi * g * sin_theta_i * cos_theta_i
                 - (7 / 3) * (cart_force_i + mpi * li_hat * dtheta_i**2 * sin_theta_i - mu_cart * dx_i)
-                - (mu_pole * dtheta_i * cos_theta_i / li_hat)
-            )
+                - (mu_pole * dtheta_i * cos_theta_i / li_hat))
         
         ddx_den_i = mpi * cos_theta_i**2 - (7 / 3) * (mc + mpi)
         ddx_i = ddx_num_i / ddx_den_i
@@ -107,45 +96,11 @@ def jax_con(v):
         ci = xi[:, 1:] - xi[:, :-1] - 0.5 * dt * (fi[:, 1:] + fi[:, :-1])
         c.append(ci.flatten())
 
-    # l = v[0]
-    # l_hat = l / 2
-    # mp = v[1]
-    # x = v[2:n*4+2].reshape((4, n))
-    # u = v[n*4+2:].reshape((n)) * uscale
-
-    # theta = x[1, :]
-    # dx = x[2, :]
-    # dtheta = x[3, :]
-    # cart_force = u
-
-    # sin_theta = jnp.sin(theta)
-    # cos_theta = jnp.cos(theta)
-
-    # ddx_num = (
-    #     mp * g * sin_theta * cos_theta
-    #     - (7 / 3) * (cart_force + mp * l_hat * dtheta**2 * sin_theta - mu_cart * dx)
-    #     - (mu_pole * dtheta * cos_theta / l_hat)
-    # )
-
-    # ddx_den = mp * cos_theta**2 - (7 / 3) * (mc + mp)
-    # ddx = ddx_num / ddx_den
-
-    # ddtheta = 3 * (g * sin_theta - ddx * cos_theta - (mu_pole * dtheta / (mp * l_hat))) / (7 * l_hat)
-
-    # # Stack all into f: shape (4, n)
-    # f = jnp.vstack((dx, dtheta, ddx, ddtheta))
-
-
-    # c = x[:, 1:] - x[:, :-1] - 0.5 * dt * (f[:, 1:] + f[:, :-1])
-    
-    # return 10 * c.flatten()
-
     return 10 * jnp.concatenate(c)
 
 
 
-vl = []
-vu = []
+vl, vu = [], []
 
 for i in range(N):
 
@@ -175,22 +130,17 @@ for i in range(N):
 
 
 
-
 nc = N * (4 * (n - 1))  # dynamics constraints
-
 
 vl = np.vstack(vl).flatten()
 vu = np.vstack(vu).flatten()
-
 
 # initial guesses
 q1_0 = np.linspace(0, d, n)
 q2_0 = np.linspace(np.pi, 0, n)
 q3_0 = np.zeros(n)
 q4_0 = np.zeros(n)
-
-u0 = np.zeros((n))
-
+u0 = np.zeros(n)
 l0 = 0.5
 mp0 = 0.4
 
@@ -204,13 +154,9 @@ jaxprob = JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                     xl=vl, xu=vu, cl=0., cu=0.)
 
 
-
-
-
 optimizer = SLSQP(jaxprob, solver_options={'maxiter': 3000, 'ftol': 1e-7}, turn_off_outputs=True)
 optimizer.solve()
 optimizer.print_results()
-
 
 
 # print peak memory usage
@@ -296,16 +242,3 @@ ani = FuncAnimation(fig, animate, frames=len(t), blit=True, interval=30)
 # ani.save("cart_pole_animation.gif", writer=PillowWriter(fps=30))
 
 plt.show()
-
-
-
-
-# results:
-# obj: 3.8284262931068933
-# l:  0.3870413653072123
-# mp:  0.5760740845717346
-
-# distributed:
-# obj: 2 * 3.828426293192311
-# l2:  0.38703993961272476
-# mp2:  0.5760724540187763
