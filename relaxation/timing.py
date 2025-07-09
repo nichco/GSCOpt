@@ -45,10 +45,11 @@ plt.rcParams.update({'font.size': 12})
 
 plt.plot(copies, monolithic_time, label='Monolithic', marker='o', markersize=8)
 plt.plot(copies, distributed_time, label='Distributed', marker='s', markersize=8)
-plt.xlabel('Sub-problems')
+plt.xlabel('Number of sub-problems')
 plt.ylabel('CPU Time (s)')
 plt.legend()
-
 plt.yscale('log')
+plt.grid(True, which="both", linestyle='-', linewidth=0.5, alpha=0.3)
+
 plt.savefig('timing.png', dpi=300, transparent=True, bbox_inches='tight')
 plt.show()
