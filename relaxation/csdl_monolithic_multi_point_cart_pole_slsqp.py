@@ -1,7 +1,7 @@
 import csdl_alpha as csdl
 import numpy as np
 from modopt import CSDLAlphaProblem
-from modopt import SLSQP, IPOPT
+from modopt import SLSQP, IPOPT, PySLSQP
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.animation import FuncAnimation

@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from modopt import JaxProblem, SLSQP
+from modopt import JaxProblem, SLSQP, PySLSQP
 import time
 import jax
 import jax.numpy as jnp 
@@ -33,8 +33,8 @@ initial_state_10 = np.array([-3, np.pi, 0, 0])
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
-# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
 
@@ -154,7 +154,8 @@ jaxprob = JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                     xl=vl, xu=vu, cl=0., cu=0.)
 
 
-optimizer = SLSQP(jaxprob, solver_options={'maxiter': 3000, 'ftol': 1e-7}, turn_off_outputs=True)
+# optimizer = SLSQP(jaxprob, solver_options={'maxiter': 3000, 'ftol': 1e-7}, turn_off_outputs=True)
+optimizer = PySLSQP(jaxprob, solver_options={'maxiter': 3000, 'acc': 1e-7}, turn_off_outputs=True)
 optimizer.solve()
 optimizer.print_results()
 

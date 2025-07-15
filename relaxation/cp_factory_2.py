@@ -30,6 +30,7 @@ N = len(initial_states) # number of blocks
 
 objective = []
 data = []
+optimality = []
 
 
 def make_functions(i):
@@ -133,12 +134,22 @@ def make_functions(i):
         jaxprob = mo.JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                                 order=1, xl=vl, xu=vu, cl=0., cu=0.)
 
-        optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-7}, turn_off_outputs=True)
+        # optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-7}, turn_off_outputs=True)
+        # optimizer.solve()
+        # optimizer.print_results()
+        # ans = optimizer.results['x']
+        # obj = optimizer.results['fun']
+        # objective.append(obj)
+
+        optimizer = mo.PySLSQP(jaxprob, solver_options={'maxiter': 700, 'acc': 1e-7}, turn_off_outputs=True)
         optimizer.solve()
         optimizer.print_results()
         ans = optimizer.results['x']
-        obj = optimizer.results['fun']
+        obj = optimizer.results['objective']
         objective.append(obj)
+        opt = optimizer.results['optimality']
+        optimality.append(opt)
+
         gc.collect()
 
         l_list[i] = ans[0]
@@ -302,5 +313,11 @@ plt.show()
 
 plt.plot(data)
 plt.xlabel('Iteration')
+plt.grid()
+plt.show()
+
+plt.plot(optimality)
+plt.xlabel('Iteration')
+plt.ylabel('Optimality')
 plt.grid()
 plt.show()
