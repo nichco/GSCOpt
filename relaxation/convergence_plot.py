@@ -10,6 +10,8 @@ filename5 = 'relaxation/convergence/monolithic_5.out'
 filename6 = 'relaxation/convergence/monolithic_6.out'
 filename7 = 'relaxation/convergence/monolithic_7.out'
 filename8 = 'relaxation/convergence/monolithic_8.out'
+filename9 = 'relaxation/convergence/monolithic_9.out'
+# filename10 = 'relaxation/convergence/monolithic_10.out'
 
 # Read the header line separately
 with open(filename2, 'r') as file:
@@ -33,6 +35,12 @@ with open(filename7, 'r') as file:
 with open(filename8, 'r') as file:
     headers8 = file.readline().strip().split()
 
+with open(filename9, 'r') as file:
+    headers9 = file.readline().strip().split()
+
+# with open(filename10, 'r') as file:
+#     headers10 = file.readline().strip().split()
+
 # Read the rest of the data into a DataFrame
 m2 = pd.read_csv(filename2, delim_whitespace=True, skiprows=1, names=headers2)
 m3 = pd.read_csv(filename3, delim_whitespace=True, skiprows=1, names=headers3)
@@ -41,9 +49,8 @@ m5 = pd.read_csv(filename5, delim_whitespace=True, skiprows=1, names=headers5)
 m6 = pd.read_csv(filename6, delim_whitespace=True, skiprows=1, names=headers6)
 m7 = pd.read_csv(filename7, delim_whitespace=True, skiprows=1, names=headers7)
 m8 = pd.read_csv(filename8, delim_whitespace=True, skiprows=1, names=headers8)
-
-# Print the DataFrame to verify
-# print(m2)
+m9 = pd.read_csv(filename9, delim_whitespace=True, skiprows=1, names=headers9)
+# m10 = pd.read_csv(filename10, delim_whitespace=True, skiprows=1, names=headers10)
 
 m2_major = m2['MAJOR'].to_numpy()
 m2_opt = m2['OPT'].to_numpy()
@@ -80,6 +87,16 @@ m8_opt = m8['OPT'].to_numpy()
 m8_feas = m8['FEAS'].to_numpy()
 m8_obj = m8['OBJFUN'].to_numpy()
 
+m9_major = m9['MAJOR'].to_numpy()
+m9_opt = m9['OPT'].to_numpy()
+m9_feas = m9['FEAS'].to_numpy()
+m9_obj = m9['OBJFUN'].to_numpy()
+
+# m10_major = m10['MAJOR'].to_numpy()
+# m10_opt = m10['OPT'].to_numpy()
+# m10_feas = m10['FEAS'].to_numpy()
+# m10_obj = m10['OBJFUN'].to_numpy()
+
 # plt.plot(m2_major, m2_obj, label='Monolithic 2 copies', color='tab:blue')
 # plt.plot(m3_major, m3_obj, label='Monolithic 3 copies', color='tab:orange')
 # plt.plot(m4_major, m4_obj, label='Monolithic 4 copies', color='tab:green')
@@ -87,6 +104,8 @@ m8_obj = m8['OBJFUN'].to_numpy()
 # plt.plot(m6_major, m6_obj, label='Monolithic 6 copies', color='tab:purple')
 # plt.plot(m7_major, m7_obj, label='Monolithic 7 copies', color='tab:brown')
 # plt.plot(m8_major, m8_obj, label='Monolithic 8 copies', color='tab:gray')
+# plt.plot(m9_major, m9_obj, label='Monolithic 9 copies', color='tab:pink')
+# plt.plot(m10_major, m10_obj, label='Monolithic 10 copies', color='tab:cyan')
 plt.plot(m2_major, m2_opt, label='Monolithic 2 copies', color='tab:blue', linewidth=3)
 plt.plot(m3_major, m3_opt, label='Monolithic 3 copies', color='tab:orange', linewidth=3)
 plt.plot(m4_major, m4_opt, label='Monolithic 4 copies', color='tab:green', linewidth=3)
@@ -94,6 +113,8 @@ plt.plot(m5_major, m5_opt, label='Monolithic 5 copies', color='tab:red', linewid
 plt.plot(m6_major, m6_opt, label='Monolithic 6 copies', color='tab:purple', linewidth=3)
 plt.plot(m7_major, m7_opt, label='Monolithic 7 copies', color='tab:brown', linewidth=3)
 plt.plot(m8_major, m8_opt, label='Monolithic 8 copies', color='tab:gray', linewidth=3)
+plt.plot(m9_major, m9_opt, label='Monolithic 9 copies', color='tab:pink', linewidth=3)
+# plt.plot(m10_major, m10_opt, label='Monolithic 10 copies', color='tab:cyan', linewidth=3)
 plt.xlabel('Iteration')
 plt.ylabel('Optimality')
 plt.legend()
