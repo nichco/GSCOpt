@@ -126,25 +126,26 @@ with open('relaxation/convergence/obj9.pkl', 'rb') as f:
 with open('relaxation/convergence/obj10.pkl', 'rb') as f:
     obj10 = pickle.load(f)
 
-tm2 = np.linspace(0, 9.86, len(m2_major))
-tm3 = np.linspace(0, 24.22, len(m3_major))
-tm4 = np.linspace(0, 112.345, len(m4_major))
-tm5 = np.linspace(0, 386.23, len(m5_major))
-tm6 = np.linspace(0, 755.009, len(m6_major))
-tm7 = np.linspace(0, 1504.773, len(m7_major))
-tm8 = np.linspace(0, 2785.930, len(m8_major))
-tm9 = np.linspace(0, 3508.666, len(m9_major))
-tm10 = np.linspace(0, 15755.439, len(m10_major))
+t0 = 0
+tm2 = np.linspace(t0, 9.86, len(m2_major))
+tm3 = np.linspace(t0, 24.22, len(m3_major))
+tm4 = np.linspace(t0, 112.345, len(m4_major))
+tm5 = np.linspace(t0, 386.23, len(m5_major))
+tm6 = np.linspace(t0, 755.009, len(m6_major))
+tm7 = np.linspace(t0, 1504.773, len(m7_major))
+tm8 = np.linspace(t0, 2785.930, len(m8_major))
+tm9 = np.linspace(t0, 3508.666, len(m9_major))
+tm10 = np.linspace(t0, 15755.439, len(m10_major))
 
-td2 = np.linspace(0, 40.675, len(obj2))
-td3 = np.linspace(0, 58.815, len(obj3))
-td4 = np.linspace(0, 176.175, len(obj4))
-td5 = np.linspace(0, 265.7, len(obj5))
-td6 = np.linspace(0, 320.679, len(obj6))
-td7 = np.linspace(0, 399.415, len(obj7))
-td8 = np.linspace(0, 565.788, len(obj8))
-td9 = np.linspace(0, 588.668, len(obj9))
-td10 = np.linspace(0, 817.812, len(obj10))
+td2 = np.linspace(t0, 40.675, len(obj2))
+td3 = np.linspace(t0, 58.815, len(obj3))
+td4 = np.linspace(t0, 176.175, len(obj4))
+td5 = np.linspace(t0, 265.7, len(obj5))
+td6 = np.linspace(t0, 320.679, len(obj6))
+td7 = np.linspace(t0, 399.415, len(obj7))
+td8 = np.linspace(t0, 565.788, len(obj8))
+td9 = np.linspace(t0, 588.668, len(obj9))
+td10 = np.linspace(t0, 817.812, len(obj10))
 
 
 
@@ -166,49 +167,49 @@ plt.figure(figsize=(7, 5))
 plt.rcParams.update({'font.size': 14})
 
 
-plt.loglog(tm2, np.abs(m2_obj - f2), label='_nolegend_', linewidth=3, color='tab:blue', zorder=10)
-plt.loglog(td2, np.abs(obj2 - f2), label='_nolegend_', linewidth=3, color='tab:blue', linestyle='--', zorder=10)
+plt.loglog(tm2, np.abs(m2_obj - f2) / np.abs(f2), label='_nolegend_', linewidth=3, color='tab:blue', zorder=10)
+plt.loglog(td2, np.abs(obj2 - f2) / np.abs(f2), label='_nolegend_', linewidth=3, color='tab:blue', linestyle='--', zorder=10)
 
-plt.loglog(tm3, np.abs(m3_obj - f3), label='_nolegend_', linewidth=3, color='tab:orange', zorder=9)
-plt.loglog(td3, np.abs(obj3 - f3), label='_nolegend_', linewidth=3, color='tab:orange', linestyle='--', zorder=9)
+plt.loglog(tm3, np.abs(m3_obj - f3) / np.abs(f3), label='_nolegend_', linewidth=3, color='tab:orange', zorder=9)
+plt.loglog(td3, np.abs(obj3 - f3) / np.abs(f3), label='_nolegend_', linewidth=3, color='tab:orange', linestyle='--', zorder=9)
 
-plt.loglog(tm4, np.abs(m4_obj - f4), label='_nolegend_', linewidth=3, color='tab:green', zorder=8)
-plt.loglog(td4, np.abs(obj4 - f4), label='_nolegend_', linewidth=3, color='tab:green', linestyle='--', zorder=8)
+plt.loglog(tm4, np.abs(m4_obj - f4) / np.abs(f4), label='_nolegend_', linewidth=3, color='tab:green', zorder=8)
+plt.loglog(td4, np.abs(obj4 - f4) / np.abs(f4), label='_nolegend_', linewidth=3, color='tab:green', linestyle='--', zorder=8)
 
-plt.loglog(tm5, np.abs(m5_obj - f5), label='_nolegend_', linewidth=3, color='tab:red', zorder=7)
-plt.loglog(td5, np.abs(obj5 - f5), label='_nolegend_', linewidth=3, color='tab:red', linestyle='--', zorder=7)
+plt.loglog(tm5, np.abs(m5_obj - f5) / np.abs(f5), label='_nolegend_', linewidth=3, color='tab:red', zorder=7)
+plt.loglog(td5, np.abs(obj5 - f5) / np.abs(f5), label='_nolegend_', linewidth=3, color='tab:red', linestyle='--', zorder=7)
 
-plt.loglog(tm6, np.abs(m6_obj - f6), label='_nolegend_', linewidth=3, color='tab:purple', zorder=6)
-plt.loglog(td6, np.abs(obj6 - f6), label='_nolegend_', linewidth=3, color='tab:purple', linestyle='--', zorder=6)
+plt.loglog(tm6, np.abs(m6_obj - f6) / np.abs(f6), label='_nolegend_', linewidth=3, color='tab:purple', zorder=6)
+plt.loglog(td6, np.abs(obj6 - f6) / np.abs(f6), label='_nolegend_', linewidth=3, color='tab:purple', linestyle='--', zorder=6)
 
-plt.loglog(tm7, np.abs(m7_obj - f7), label='_nolegend_', linewidth=3, color='tab:brown', zorder=5)
-plt.loglog(td7, np.abs(obj7 - f7), label='_nolegend_', linewidth=3, color='tab:brown', linestyle='--', zorder=5)
+plt.loglog(tm7, np.abs(m7_obj - f7) / np.abs(f7), label='_nolegend_', linewidth=3, color='tab:brown', zorder=5)
+plt.loglog(td7, np.abs(obj7 - f7) / np.abs(f7), label='_nolegend_', linewidth=3, color='tab:brown', linestyle='--', zorder=5)
 
-plt.loglog(tm8, np.abs(m8_obj - f8), label='_nolegend_', linewidth=3, color='tab:gray', zorder=4)
-plt.loglog(td8, np.abs(obj8 - f8), label='_nolegend_', linewidth=3, color='tab:gray', linestyle='--', zorder=4)
+plt.loglog(tm8, np.abs(m8_obj - f8) / np.abs(f8), label='_nolegend_', linewidth=3, color='tab:gray', zorder=4)
+plt.loglog(td8, np.abs(obj8 - f8) / np.abs(f8), label='_nolegend_', linewidth=3, color='tab:gray', linestyle='--', zorder=4)
 
-plt.loglog(tm9, np.abs(m9_obj - f9), label='_nolegend_', linewidth=3, color='tab:pink', zorder=3)
-plt.loglog(td9, np.abs(obj9 - f9), label='_nolegend_', linewidth=3, color='tab:pink', linestyle='--', zorder=3)
+plt.loglog(tm9, np.abs(m9_obj - f9) / np.abs(f9), label='_nolegend_', linewidth=3, color='tab:pink', zorder=3)
+plt.loglog(td9, np.abs(obj9 - f9) / np.abs(f9), label='_nolegend_', linewidth=3, color='tab:pink', linestyle='--', zorder=3)
 
-plt.loglog(tm10, np.abs(m10_obj - f10), label='_nolegend_', linewidth=3, color='tab:cyan', zorder=2)
-plt.loglog(td10, np.abs(obj10 - f10), label='_nolegend_', linewidth=3, color='tab:cyan', linestyle='--', zorder=2)
+plt.loglog(tm10, np.abs(m10_obj - f10) / np.abs(f10), label='_nolegend_', linewidth=3, color='tab:cyan', zorder=2)
+plt.loglog(td10, np.abs(obj10 - f10) / np.abs(f10), label='_nolegend_', linewidth=3, color='tab:cyan', linestyle='--', zorder=2)
 
 
 
-plt.scatter(td2[-1], np.abs(obj2[-1] - f2), color='tab:blue', marker='o', s=120, label='2', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td3[-1], np.abs(obj3[-1] - f3), color='tab:orange', marker='s', s=120, label='3', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td4[-1], np.abs(obj4[-1] - f4), color='tab:green', marker='^', s=120, label='4', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td5[-1], np.abs(obj5[-1] - f5), color='tab:red', marker='p', s=120, label='5', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td6[-1], np.abs(obj6[-1] - f6), color='tab:purple', marker='>', s=120, label='6', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td7[-1], np.abs(obj7[-1] - f7), color='tab:brown', marker='D', s=120, label='7', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td8[-1], np.abs(obj8[-1] - f8), color='tab:gray', marker='<', s=120, label='8', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td9[-1], np.abs(obj9[-1] - f9), color='tab:pink', marker='P', s=120, label='9', linewidths=2, edgecolors='black', zorder=10,)
-plt.scatter(td10[-1], np.abs(obj10[-1] - f10), color='tab:cyan', marker='v', s=120, label='10', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td2[-1], np.abs(obj2[-1] - f2) / np.abs(f2), color='tab:blue', marker='o', s=120, label='2', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td3[-1], np.abs(obj3[-1] - f3) / np.abs(f3), color='tab:orange', marker='s', s=120, label='3', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td4[-1], np.abs(obj4[-1] - f4) / np.abs(f4), color='tab:green', marker='^', s=120, label='4', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td5[-1], np.abs(obj5[-1] - f5) / np.abs(f5), color='tab:red', marker='p', s=120, label='5', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td6[-1], np.abs(obj6[-1] - f6) / np.abs(f6), color='tab:purple', marker='>', s=120, label='6', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td7[-1], np.abs(obj7[-1] - f7) / np.abs(f7), color='tab:brown', marker='D', s=120, label='7', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td8[-1], np.abs(obj8[-1] - f8) / np.abs(f8), color='tab:gray', marker='<', s=120, label='8', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td9[-1], np.abs(obj9[-1] - f9) / np.abs(f9), color='tab:pink', marker='P', s=120, label='9', linewidths=2, edgecolors='black', zorder=10,)
+plt.scatter(td10[-1], np.abs(obj10[-1] - f10) / np.abs(f10), color='tab:cyan', marker='v', s=120, label='10', linewidths=2, edgecolors='black', zorder=10,)
 
 
 
 plt.ylabel('Objective function error')
-plt.xlabel('CPU Time (s)')
+plt.xlabel('CPU time (s)')
 leg = plt.legend(fontsize=12,)
 leg.zorder = 11
 plt.savefig('convergence.png', dpi=300, transparent=True, bbox_inches='tight')
