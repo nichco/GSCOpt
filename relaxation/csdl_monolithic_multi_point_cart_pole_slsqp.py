@@ -74,7 +74,7 @@ initial_state_8 = np.array([0.3, np.pi+np.pi/2, 0, 0])
 initial_state_9 = np.array([-0.5, np.pi+np.pi/2, 0, 0])
 initial_state_10 = np.array([-3, np.pi, 0, 0])
 
-# initial_states = [initial_state_1, initial_state_2]
+initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
@@ -82,7 +82,7 @@ initial_state_10 = np.array([-3, np.pi, 0, 0])
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
 
 
 N = len(initial_states)  # number of cp copies
@@ -193,7 +193,20 @@ print('length: ', l.value)
 
 
 
+multipliers = optimizer.results['multipliers']
+constraints = optimizer.results['constraints']
+# print('multipliers: ', lagrange_multipliers)
+# print('constraints: ', constraints)
+print(multipliers.shape)
+print(constraints.shape)
 
+h1 = multipliers * np.maximum(0, -1 * constraints)
+# h1 = mu*max(0, -c[:meq])
+
+print('h1: ', np.linalg.norm(h1))
+print(h1.shape)
+
+print(optimizer.results['optimality'])
 
 
 
