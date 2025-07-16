@@ -293,7 +293,7 @@ tracemalloc.start()
 
 opt.solve(max_iter=100, 
           rho=1.2, # must be greater than 1
-          tol=1e-6,
+          tol=1e-7,
           ctol=1e-4)
 
 # print peak memory usage
@@ -324,6 +324,13 @@ plt.plot(data)
 plt.xlabel('Iteration')
 plt.grid()
 plt.show()
+
+
+
+
+# import pickle
+# with open('obj4.pkl', 'wb') as f:
+#     pickle.dump(objective, f)
 
 
 

@@ -30,7 +30,6 @@ N = len(initial_states) # number of blocks
 
 objective = []
 data = []
-optimality = []
 
 
 def make_functions(i):
@@ -134,21 +133,12 @@ def make_functions(i):
         jaxprob = mo.JaxProblem(x0=x0, nc=nc, jax_obj=jax_obj, jax_con=jax_con,
                                 order=1, xl=vl, xu=vu, cl=0., cu=0.)
 
-        # optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-7}, turn_off_outputs=True)
-        # optimizer.solve()
-        # optimizer.print_results()
-        # ans = optimizer.results['x']
-        # obj = optimizer.results['fun']
-        # objective.append(obj)
-
-        optimizer = mo.PySLSQP(jaxprob, solver_options={'maxiter': 700, 'acc': 1e-7}, turn_off_outputs=True)
+        optimizer = mo.SLSQP(jaxprob, solver_options={'maxiter': 700, 'ftol': 1e-7}, turn_off_outputs=True)
         optimizer.solve()
         optimizer.print_results()
         ans = optimizer.results['x']
-        obj = optimizer.results['objective']
+        obj = optimizer.results['fun']
         objective.append(obj)
-        opt = optimizer.results['optimality']
-        optimality.append(opt)
 
         gc.collect()
 
@@ -286,7 +276,7 @@ tracemalloc.start()
 opt.solve(max_iter=100, 
           rho=1.2, # must be greater than 1
           tol=1e-7,
-          ctol=1e-7)
+          ctol=1e-4)
 
 current, peak = tracemalloc.get_traced_memory()
 tracemalloc.stop()
@@ -316,8 +306,8 @@ plt.xlabel('Iteration')
 plt.grid()
 plt.show()
 
-plt.plot(optimality)
-plt.xlabel('Iteration')
-plt.ylabel('Optimality')
-plt.grid()
-plt.show()
+
+
+# import pickle
+# with open('obj2.pkl', 'wb') as f:
+#     pickle.dump(objective, f)

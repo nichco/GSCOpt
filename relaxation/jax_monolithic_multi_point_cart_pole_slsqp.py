@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 from modopt import JaxProblem, SLSQP, PySLSQP
 import time
 import jax
 import jax.numpy as jnp 
 jax.config.update("jax_enable_x64", True)
 import tracemalloc
+
+
+# THIS PROB IS WRONG CURRENTLY BECAUSE L AND MP ARE DIFFERENT VARS FOR EACH PROB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 n = 30
 dt = 2 / n
@@ -28,14 +30,14 @@ initial_state_8 = np.array([0.3, np.pi+np.pi/2, 0, 0])
 initial_state_9 = np.array([-0.5, np.pi+np.pi/2, 0, 0])
 initial_state_10 = np.array([-3, np.pi, 0, 0])
 
-# initial_states = [initial_state_1, initial_state_2]
+initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
-initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
+# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
 
 
@@ -167,79 +169,14 @@ print(f"Peak memory usage: {peak / 1e6} MB")
 
 
 
-exit()
+# exit()
 
-v = optimizer.results['x']
-l = v[0]
-mp = v[1]
-x = v[2:n*4+2].reshape((4, n))
-u = v[n*4+2:].reshape((1, n))
-
-
-print('l: ', l)
-print('mp: ', mp)
+# v = optimizer.results['x']
+# l = v[0]
+# mp = v[1]
+# x = v[2:n*4+2].reshape((4, n))
+# u = v[n*4+2:].reshape((1, n))
 
 
-
-
-
-
-
-t = np.linspace(0, n*dt, n)
-position = x[0, :]  # cart position
-angle = x[1, :]    # pole angle
-
-
-plt.plot(position)
-plt.plot(angle)
-plt.plot(u.flatten())
-plt.show()
-
-
-
-
-# Compute pole tip position
-pole_x = position + l * np.sin(angle)
-pole_y = l * np.cos(angle)
-
-
-
-# Animation setup
-fig, ax = plt.subplots()
-ax.set_aspect('equal')
-ax.grid(True)
-
-# Determine plot limits
-x_min, x_max = position.min() - l - 0.5, position.max() + l + 0.5
-y_min, y_max = -l - 0.2, l + 0.2
-ax.set_xlim(x_min, x_max)
-ax.set_ylim(y_min, y_max)
-
-# Cart parameters
-cart_width = 0.4
-cart_height = 0.2
-
-# Create cart as a Rectangle patch
-cart = plt.Rectangle((position[0] - cart_width/2, -cart_height/2), cart_width, cart_height, facecolor='lightblue')
-ax.add_patch(cart)
-
-# Create pole as a line
-pole_line, = ax.plot([], [], lw=5, color='red')
-pole_tip, = ax.plot([], [], 'o', color='green', markersize=12)
-
-def animate(i):
-    # Update cart position
-    cart.set_xy((position[i] - cart_width/2, -cart_height/2))
-    # Update pole line: from cart center up to pole tip
-    x0, y0 = position[i], 0
-    pole_line.set_data([x0, pole_x[i]], [y0, pole_y[i]])
-    pole_tip.set_data([pole_x[i]], [pole_y[i]])
-    return cart, pole_line, pole_tip
-
-# Create animation
-ani = FuncAnimation(fig, animate, frames=len(t), blit=True, interval=30)
-
-# from matplotlib.animation import PillowWriter
-# ani.save("cart_pole_animation.gif", writer=PillowWriter(fps=30))
-
-plt.show()
+# print('l: ', l)
+# print('mp: ', mp)

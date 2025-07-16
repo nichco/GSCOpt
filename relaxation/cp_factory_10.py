@@ -369,7 +369,7 @@ u_data = opt.solution[3*N : 4*N]
 print('l: ', l_data)
 print('mp: ', mp_data)
 
-plt.plot(objective[8:]) # skip the first infeasible iteration(s)
+plt.plot(objective[9:]) # skip the first infeasible iteration(s)
 plt.xlabel('Iteration')
 plt.ylabel('Objective function value')
 plt.show()
@@ -380,6 +380,11 @@ plt.ylabel('Lagrange multipliers')
 plt.show()
 
 
+
+
+import pickle
+with open('obj10.pkl', 'wb') as f:
+    pickle.dump(objective, f)
 
 
 

@@ -373,6 +373,11 @@ plt.show()
 
 
 
+import pickle
+with open('obj9.pkl', 'wb') as f:
+    pickle.dump(objective, f)
+
+
 
 
 # plot the cart-pole trajectories

@@ -74,7 +74,7 @@ initial_state_8 = np.array([0.3, np.pi+np.pi/2, 0, 0])
 initial_state_9 = np.array([-0.5, np.pi+np.pi/2, 0, 0])
 initial_state_10 = np.array([-3, np.pi, 0, 0])
 
-initial_states = [initial_state_1, initial_state_2]
+# initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5]
@@ -82,7 +82,7 @@ initial_states = [initial_state_1, initial_state_2]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8]
 # initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9]
-# initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
+initial_states = [initial_state_1, initial_state_2, initial_state_3, initial_state_4, initial_state_5, initial_state_6, initial_state_7, initial_state_8, initial_state_9, initial_state_10]
 
 
 N = len(initial_states)  # number of cp copies
@@ -171,7 +171,8 @@ sim = csdl.experimental.JaxSimulator(recorder=recorder)
 prob = CSDLAlphaProblem(simulator=sim)
 t1 = time.time()
 tracemalloc.start()
-optimizer = SLSQP(prob, solver_options={'maxiter': 3000, 'ftol': 1e-7}, turn_off_outputs=True)
+# optimizer = SLSQP(prob, solver_options={'maxiter': 3000, 'ftol': 1e-7}, turn_off_outputs=True)
+optimizer = PySLSQP(prob, solver_options={'maxiter': 3000, 'acc': 1e-7}, turn_off_outputs=True)
 optimizer.solve()
 optimizer.print_results()
 t2 = time.time()
